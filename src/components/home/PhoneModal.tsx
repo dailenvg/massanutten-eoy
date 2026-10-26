@@ -6,7 +6,7 @@ import { CalendarDots, Clock, Headset, Phone, X } from "@/lib/icons";
 import { lockBody, unlockBody } from "@/lib/scroll-lock";
 import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { MODAL_RISE, MODAL_STAGGER, PRESS, RING_PULSE, SPRING, TWEEN_COMPONENT } from "@/lib/motion";
-import { CALL_MICROCOPY, PHONE_DISPLAY, PHONE_HOURS_ROWS, PHONE_HOURS_ZONE, PHONE_HREF } from "@/lib/offer";
+import { CALL_MICROCOPY, PHONE_CONFIRMED, PHONE_DISPLAY, PHONE_HOURS_ROWS, PHONE_HOURS_ZONE, PHONE_HREF } from "@/lib/offer";
 import type { SeasonKey } from "@/lib/season";
 import { useModals } from "./ModalContext";
 import ModalSeasonFx from "./season-fx/ModalSeasonFx";
@@ -155,13 +155,24 @@ export default function PhoneModal({ season }: { season: SeasonKey }) {
             </div>
 
             <div className="pm-body">
-              <motion.a className="pm-call" href={PHONE_HREF} data-call-cta variants={item} {...press}>
-                <Phone className="pm-call-icon" aria-hidden="true" />
-                <span className="pm-call-text">
-                  <span className="pm-call-label">Call us</span>
-                  <span className="pm-call-num">{PHONE_DISPLAY}</span>
-                </span>
-              </motion.a>
+              {PHONE_CONFIRMED ? (
+                <motion.a className="pm-call" href={PHONE_HREF} data-call-cta variants={item} {...press}>
+                  <Phone className="pm-call-icon" aria-hidden="true" />
+                  <span className="pm-call-text">
+                    <span className="pm-call-label">Call us</span>
+                    <span className="pm-call-num">{PHONE_DISPLAY}</span>
+                  </span>
+                </motion.a>
+              ) : (
+                /* Placeholder number: plain text, styled as info rather than a button, until PHONE_HREF is real. */
+                <motion.p className="pm-call pm-call--pending" variants={item}>
+                  <Phone className="pm-call-icon" aria-hidden="true" />
+                  <span className="pm-call-text">
+                    <span className="pm-call-label">Call us</span>
+                    <span className="pm-call-num">{PHONE_DISPLAY}</span>
+                  </span>
+                </motion.p>
+              )}
 
               <motion.ul id={HOURS_ID} className="pm-hours" aria-label="Call center hours" variants={item}>
                 {PHONE_HOURS_ROWS.map(({ days, time }) => (

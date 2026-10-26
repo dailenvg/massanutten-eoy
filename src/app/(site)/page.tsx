@@ -7,7 +7,6 @@ import Hero from "@/components/home/Hero";
 import HeroSubmenu from "@/components/home/HeroSubmenu";
 import PhotoStrip from "@/components/home/PhotoStrip";
 import WhatYouGet from "@/components/home/WhatYouGet";
-import SeasonalSaleBanner from "@/components/home/SeasonalSaleBanner";
 import ResortDetails from "@/components/home/ResortDetails";
 import EverythingIncluded from "@/components/home/EverythingIncluded";
 import VectorCta from "@/components/home/VectorCta";
@@ -29,7 +28,7 @@ import SeasonMarker from "@/components/shared/SeasonMarker";
 import { resolveSeason } from "@/lib/season";
 import { GUEST_STORIES } from "@/lib/guest-stories";
 import { RESORT_VIDEO_SRC } from "@/lib/offer";
-import { PAGE_DESCRIPTION, RESERVE_URL } from "@/lib/site";
+import { CANONICAL_URL, OG_IMAGE_URL, PAGE_DESCRIPTION, RESERVE_URL } from "@/lib/site";
 
 export { generateSeasonViewport as generateViewport } from "@/lib/season-viewport";
 
@@ -44,13 +43,28 @@ async function seasonForRequest(searchParams: PageProps["searchParams"]) {
   return resolveSeason(season);
 }
 
-/** Meta title swaps with the season; the description does not. */
+/**
+ * Meta title swaps with the season; the description does not. Next replaces the
+ * layout's openGraph/twitter objects wholesale, so they repeat its other fields.
+ */
 export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
   const season = await seasonForRequest(searchParams);
   return {
     title: season.metaTitle,
-    openGraph: { title: season.metaTitle, description: PAGE_DESCRIPTION },
-    twitter: { title: season.metaTitle, description: PAGE_DESCRIPTION },
+    openGraph: {
+      title: season.metaTitle,
+      description: PAGE_DESCRIPTION,
+      images: [OG_IMAGE_URL],
+      url: CANONICAL_URL,
+      type: "website",
+      siteName: "VacationVIP",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: season.metaTitle,
+      description: PAGE_DESCRIPTION,
+      images: [OG_IMAGE_URL],
+    },
   };
 }
 
@@ -67,7 +81,6 @@ export default async function HomePage({ searchParams }: PageProps) {
       <HeroSubmenu />
       <PhotoStrip />
       <WhatYouGet />
-      <SeasonalSaleBanner season={season} />
       <ResortDetails season={season} />
       <EverythingIncluded season={season} />
       <VectorCta />

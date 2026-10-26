@@ -298,6 +298,23 @@
   outline-offset: 3px;
 }
 
+/* Placeholder number (PHONE_CONFIRMED false): an info row like the hours below,
+   not a filled CTA pill, so it never reads as a dead button. */
+.pm-call--pending {
+  margin: 0;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  color: var(--band);
+  box-shadow: none;
+  cursor: default;
+}
+
+.pm-call--pending:hover,
+.pm-call--pending:active {
+  color: var(--band);
+  filter: none;
+}
+
 .pm-call-icon {
   flex-shrink: 0;
   width: 28px;

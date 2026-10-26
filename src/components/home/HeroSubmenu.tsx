@@ -185,7 +185,7 @@ export default function HeroSubmenu() {
           <button type="button" className="hero-submenu-arrow hero-submenu-arrow--prev" aria-label="Scroll menu left"><ChevronLeft aria-hidden="true" /></button>
           <div className="hero-submenu-scroll">
             <div className="hero-submenu-track">
-              {RESORT_VIDEO_SRC ? <a href="#" className="menul2item playvideo">Resort video</a> : null}
+              {RESORT_VIDEO_SRC ? <a href="#" className="menul2item playvideo" aria-haspopup="dialog">Resort video</a> : null}
               <a href="#whatYouGet" className="menul2item">What you get</a>
               <a href="#resort-details" className="menul2item">Resort details</a>
               <a href="#everything-included" className="menul2item">Included</a>

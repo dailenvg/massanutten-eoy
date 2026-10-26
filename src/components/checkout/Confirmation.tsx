@@ -36,6 +36,7 @@ const todayLabel = () => new Date().toLocaleDateString("en-US");
 const HERO_SIZES = "(max-width: 767px) 143vw, (max-width: 1023px) calc(100vw - 64px), 981px";
 import type { Addons } from "@/lib/booking";
 import {
+  PHONE_CONFIRMED,
   PHONE_DISPLAY,
   PHONE_HOURS,
   PHONE_HREF,
@@ -159,10 +160,18 @@ function ConfirmationInner({ heroImage }: { heroImage: string }) {
                 {PHONE_HOURS}
               </p>
             </div>
-            <a className="cf-action-cta" href={PHONE_HREF} data-call-cta>
-              <Phone aria-hidden={true} />
-              Call now: {PHONE_DISPLAY}
-            </a>
+            {PHONE_CONFIRMED ? (
+              <a className="cf-action-cta" href={PHONE_HREF} data-call-cta>
+                <Phone aria-hidden={true} />
+                Call now: {PHONE_DISPLAY}
+              </a>
+            ) : (
+              /* Placeholder number: text, not a dead button, until PHONE_HREF is real. */
+              <p className="cf-action-cta cf-action-cta--pending">
+                <Phone aria-hidden={true} />
+                Call now: {PHONE_DISPLAY}
+              </p>
+            )}
           </section>
 
           <h2 className="cf-section-title">Your vacation summary</h2>
@@ -219,7 +228,7 @@ function ConfirmationInner({ heroImage }: { heroImage: string }) {
           <section className="cf-help">
             <p>
               Call now if you have any questions:{" "}
-              <a href={PHONE_HREF} data-call-cta>{PHONE_DISPLAY}</a>
+              {PHONE_CONFIRMED ? <a href={PHONE_HREF} data-call-cta>{PHONE_DISPLAY}</a> : <strong>{PHONE_DISPLAY}</strong>}
             </p>
             <p className="cf-help-hours">
               <strong>Hours of operation:</strong><br />

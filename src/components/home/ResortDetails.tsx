@@ -51,7 +51,7 @@ export default function ResortDetails({ season }: { season: Season }) {
       <div className="hs-right">
         <img src="/images/massanutten/snow-tubing-lane.webp" srcSet={srcSetFor("/images/massanutten/snow-tubing-lane.webp")} sizes="(max-width: 767px) 100vw, 50vw" alt="Guests snow tubing down a Massanutten tubing lane" width="1024" height="768" loading="lazy" decoding="async" />
         {RESORT_VIDEO_SRC ? (
-          <a href="#" className="hs-video playvideo" aria-label={`Play ${RESORT_SHORT} resort video`}>
+          <a href="#" className="hs-video playvideo" aria-haspopup="dialog" aria-label={`Play ${RESORT_SHORT} video`}>
             <span className="hs-play"><Play aria-hidden="true" style={{ color: "currentColor", fill: "currentColor", width: "38px", height: "38px" }} /></span>
           </a>
         ) : null}

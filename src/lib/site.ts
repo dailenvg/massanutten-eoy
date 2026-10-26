@@ -2,7 +2,7 @@ import { META_DESCRIPTION } from "@/lib/offer";
 import { DEFAULT_SEASON } from "@/lib/season";
 
 /** CONFIRM: proposed slug; the checkout path must exist in VacationVIP before launch. */
-export const SLUG = "sogno-massanutten-99-eoy";
+export const SLUG = "sogno-massanutten-104-eoy";
 
 export const CHECKOUT_URL = `https://vacationvip.com/checkout/${SLUG}/general-information`;
 

@@ -1382,7 +1382,7 @@ img[alt^="Seal"]:hover {
 .property-sogno-wg-orlando-99-eoy .priceanddiscount { padding-block: 6px; }
 .property-sogno-wg-orlando-99-eoy .includingslist { gap: 3px; margin-block: 3px; padding-block: 3px; }
 
-/* Half-moon hangs ~17px below the $99 row. Massanutten clears it with 16px price-block padding + 8px list padding. Card compression above collapsed that, so the badge overlapped the first amenity. */
+/* Half-moon hangs ~17px below the price row. Massanutten clears it with 16px price-block padding + 8px list padding. Card compression above collapsed that, so the badge overlapped the first amenity. */
 
 .property-sogno-wg-orlando-99-eoy .priceanddiscount.pricing-section--highlighted {
   padding-block: 16px;
@@ -2969,3 +2969,63 @@ html:has(> .property-sogno-wg-orlando-99-eoy),
 @media screen and (max-width: 767px) { .ob-sticker:has(> .hero-lockup) { width: min(390px, 100%); } }
 @media screen and (max-width: 479px) { .ob-sticker:has(> .hero-lockup) { width: min(344px, 100%); } }
 @media screen and (max-width: 360px) { .ob-sticker:has(> .hero-lockup) { width: min(310px, 100%); } }
+
+/* -------------------------------------------------------------------------- */
+/* Resort video (ResortVideoModal + its three .playvideo triggers)             */
+/* -------------------------------------------------------------------------- */
+
+/* The export's z-index 20 put the player under the mobile sticky bar (999) and
+   the stuck submenu; sit with the other modals. */
+.resortvideo {
+  z-index: 9999;
+}
+
+/* Fit the 16:9 player to the viewport height too, so wide/short screens
+   (e.g. 2560x1080, phones in landscape) keep the native controls on screen.
+   <video> letterboxes inside its box, so the ratio is preserved. */
+.resortvideo video {
+  display: block;
+  max-height: calc(100dvh - 112px);
+  background: #000;
+}
+
+/* The global navy focus ring is invisible on the near-black backdrop. */
+.resortvideo .videoclosebtn:focus-visible,
+.resortvideo video:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Hero play icon sits on the dark scrimmed photo, where the global navy focus
+   ring is invisible: white ring with a navy halo, plus the hover fill. */
+.video-resort.playvideo--icon:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+  box-shadow: 0 0 0 6px #0d1f48;
+  background-color: #f9e270;
+}
+
+/* Resort Details play overlay covers the clipped .hs-right, so an outline on the
+   link itself is cut off. Ring the play disc instead, matching hover. */
+.hs-video:focus-visible {
+  outline: none;
+}
+.hs-video:focus-visible .hs-play {
+  transform: scale(1.08);
+  background: var(--accent-soft, #eef6ff);
+  box-shadow: 0 0 0 4px #ffffff, 0 0 0 8px #0d1f48, 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.hs-video:active .hs-play {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hs-play {
+    transition: none;
+  }
+  .hs-video:hover .hs-play,
+  .hs-video:focus-visible .hs-play,
+  .hs-video:active .hs-play {
+    transform: none;
+  }
+}

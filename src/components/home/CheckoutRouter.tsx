@@ -13,7 +13,7 @@ declare global {
 // Channel is derived from utm_source only (meta | google | bing | 3pr); every channel shares one checkout URL.
 const UTM_STORAGE_KEY = "utm_params";
 const TRACKING_PARAM_PATTERN = /^(utm_|gclid|fbclid|msclkid|referrer)/i;
-const CTA_SELECTOR = ".checkout-cta, .hs-cta, .rd-cta, .gr-cta, .bch-cta, .ss-cta, .msc-cta, a.vector-cta";
+const CTA_SELECTOR = ".checkout-cta, .hs-cta, .rd-cta, .gr-cta, .bch-cta, .msc-cta, a.vector-cta";
 const SUPPRESS_SCARCITY_FOR = ["google", "bing"];
 
 function getQueryStringFromUrl(): string {

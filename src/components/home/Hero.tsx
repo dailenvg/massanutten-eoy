@@ -58,7 +58,7 @@ export default function Hero({ season }: { season: Season }) {
               </div>
 
               {RESORT_VIDEO_SRC ? (
-                <a data-video-id="1" href="#" aria-label="Play resort video" className="video-resort playvideo playvideo--icon w-inline-block">
+                <a data-video-id="1" href="#" aria-label="Play resort video" aria-haspopup="dialog" className="video-resort playvideo playvideo--icon w-inline-block">
                   <CirclePlay className="image-42" aria-hidden="true" style={{ color: "var(--accent-strong)", width: "34px", height: "34px" }} />
                 </a>
               ) : null}

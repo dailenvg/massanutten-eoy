@@ -6,13 +6,13 @@ import { useReducedMotion } from "@/lib/use-reduced-motion";
 import { ArrowsClockwise, ClockCountdown, ShieldCheck, ShieldWarning, Star } from "@/lib/icons";
 import { SPRING, TWEEN_COMPONENT } from "@/lib/motion";
 import { PRICES, money } from "@/lib/booking";
-import { RETAIL_VALUE } from "@/lib/offer";
+import { PRICE_UNIT, RETAIL_VALUE } from "@/lib/offer";
 
 /**
  * Booking Protection — shown once payment is submitted (Figma 1:2793).
  *
  * The comp prices it "$16.33 per person"; this offer's spec lists Booking
- * Protection as a flat $24.99, so the chip reads "per package". Continue is
+ * Protection as a flat $24.99, so the chip carries the package unit (PRICE_UNIT). Continue is
  * disabled until Yes or No is chosen, as the comp annotates.
  */
 export default function ProtectionModal({
@@ -66,7 +66,7 @@ export default function ProtectionModal({
                 <span className="md-choice-row">
                   <input ref={firstRadio} type="radio" name="protection" value="yes" checked={choice === "yes"} onChange={() => setChoice("yes")} />
                   <span className="md-choice-text">Yes, I want Hotel Booking Protection for my vacation</span>
-                  <span className="md-chip"><b>{money(PRICES.protection)}</b><small>Per package</small></span>
+                  <span className="md-chip"><b>{money(PRICES.protection)}</b><small>{PRICE_UNIT}</small></span>
                 </span>
                 <span className="md-reasons">
                   <span className="md-reasons-title">3 reasons you might need Hotel Booking Protection:</span>

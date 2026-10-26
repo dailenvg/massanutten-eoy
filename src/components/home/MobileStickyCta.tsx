@@ -8,7 +8,7 @@ import PhoneTrigger from "./PhoneTrigger";
 
 /**
  * Component C — bottom sticky offer bar on phones:
- * "$540 VALUE | <seasonal label> | $99 Per Package".
+ * "$748 VALUE | <seasonal label> | $104 Per Family".
  * Slides in once the hero has scrolled out of view; only the label is seasonal.
  */
 export default function MobileStickyCta({ season }: { season: Season }) {

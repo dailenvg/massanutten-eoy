@@ -4,7 +4,7 @@ import PriceNumeral from "./PriceNumeral";
 
 /**
  * Price composition: sale-name chip and struck retail value on one line, then
- * the dominant rolling "$99" with its per-package label beside it. Shared by
+ * the dominant rolling "$104" with its "Per Family" label beside it. Shared by
  * the hero offer card and Resort Details so both price blocks match. Both
  * pass `percentOff` for the ribbon tab flush with the box's left edge.
  */

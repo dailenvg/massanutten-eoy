@@ -1,9 +1,8 @@
 /**
- * Seasonal design system (copy spec §2) plus Component A (top bar, §3) and
- * Component F (seasonal sale banner, §8).
+ * Seasonal design system (copy spec §2) plus Component A (top bar, §3).
  *
- * Palette tokens are set per version on [data-season] and consumed by both
- * components, so a cutover repaints everything seasonal from one place. The
+ * Palette tokens are set per version on [data-season] and consumed by every
+ * seasonal component, so a cutover repaints everything seasonal from one place. The
  * site-wide accents (CTAs, icons, bands) come from season-accents.css; logo,
  * page backgrounds and navy body copy stay brand.
  *
@@ -12,20 +11,18 @@
 
 /*
  * Token roles:
- *   --s-bg / --s-on          seasonal block + its text (top bar, banner block)
- *   --s-accent / -alt        accents (big banner text, particles)
- *   --s-cta-bg / --s-cta-text  seasonal pill/tag fill (banner pill-right)
+ *   --s-bg / --s-on          seasonal block + its text (top bar, phone modal header)
+ *   --s-accent / -alt        accents (seasonal icons, particles)
+ *   --s-cta-bg / --s-cta-text  seasonal pill/tag fill (phone modal call button)
  *   --s-chip-bg / --s-chip-on  small text chips (countdown); always >= 4.5:1
  *   --s-badge-bg / --s-badge-on seasonal badge pair; always >= 4.5:1 (the hero
  *                            lockup in HeroLockup.tsx sets its own colours)
  *   --s-pill-icon            pill-row icons on the white pill; always >= 3:1 on white
  * Mountain palette (docs/season-palette-proposal.md): Blue Ridge colours
  * (blue-ridge dusk, ember, evergreen, river stone, birch) tuned per season.
- * --s-accent is used as text only at large sizes (banner name >= 20px/800,
- * big banner text >= 32px) and as icons; every accent is >= 3:1 on the
- * banner panel worst case (88% band over a white photo) and on the chips.
- * tt and hs override accent text in seasonal-sale-banner.css; --s-accent-alt
- * is decorative-only outside tt.
+ * --s-accent is used as text only at large sizes and as icons; every accent
+ * is >= 3:1 on its band and on the chips.
+ * --s-accent-alt is decorative-only outside tt.
  */
 [data-season="winter"],
 [data-season="late"] {
@@ -940,239 +937,6 @@
 }
 
 /* -------------------------------------------------------------------------- */
-/* Component F — seasonal sale banner                                         */
-/* -------------------------------------------------------------------------- */
-
-.ssb {
-  display: block;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0;
-  text-decoration: none;
-  font-family: Roboto, Arial, sans-serif;
-}
-
-.ssb:focus-visible {
-  /* Ring sits on the light page: the dark season bg clears 3:1 everywhere; gold/cyan accents did not. */
-  outline: 3px solid var(--s-bg);
-  outline-offset: 4px;
-}
-
-.ssb-pill {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  min-height: 48px;
-  padding: 8px 24px;
-  border-radius: 999px 999px 0 0;
-  background: #ffffff;
-  color: #0b2a4a;
-}
-
-.ssb-pill-icon {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  color: var(--s-pill-icon);
-}
-
-.ssb-pill-text {
-  min-width: 0;
-  font-size: clamp(12px, 1.3vw, 16px);
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  text-align: center;
-}
-
-.ssb-block {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 32px 24px;
-  overflow: hidden;
-  background-color: var(--s-bg);
-  /* Set --ssb-image per version once destination photography is supplied. */
-  background-image: var(--ssb-image, none);
-  background-size: cover;
-  background-position: center;
-  color: var(--s-on);
-}
-
-/* Per-version photo treatments. Every one keeps a tinted field behind the type for contrast. */
-.ssb-block::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--s-bg) 88%, transparent) 0%,
-    color-mix(in srgb, var(--s-bg) 55%, transparent) 100%
-  );
-}
-
-.ssb-block[data-treatment="dark-overlay"]::before {
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.6));
-}
-
-.ssb-block[data-treatment="blue-duotone"]::before {
-  background: linear-gradient(90deg, rgba(7, 11, 43, 0.9), rgba(34, 211, 238, 0.35));
-  mix-blend-mode: multiply;
-}
-
-.ssb-block[data-treatment="bright"]::before {
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--s-bg) 85%, transparent) 0%,
-    transparent 75%
-  );
-}
-
-/* Travel Tuesday: passport-stamp graphic in the corner. Decorative. */
-.ssb-block[data-treatment="bright"]::after {
-  content: "";
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 64px;
-  height: 64px;
-  border: 3px dashed var(--s-accent-alt);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 6px transparent, inset 0 0 0 8px var(--s-accent-alt);
-  opacity: 0.85;
-  transform: rotate(-14deg);
-  pointer-events: none;
-}
-
-.ssb-big-word,
-.ssb-big-text {
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
-}
-
-.ssb-big-word,
-.ssb-right {
-  position: relative;
-  min-width: 0;
-}
-
-.ssb-big-word {
-  font-size: clamp(32px, 6vw, 72px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.01em;
-}
-
-.ssb-right {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 16px;
-}
-
-.ssb-big-text {
-  font-size: clamp(32px, 6vw, 72px);
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.01em;
-  color: var(--s-accent);
-  overflow-wrap: anywhere;
-}
-
-/* TT orange on the teal band is 3.43:1; the birch accent-alt is 6.70:1. */
-[data-season="tt"] .ssb-big-text {
-  color: var(--s-accent-alt);
-}
-
-.ssb-big-word {
-  overflow-wrap: anywhere;
-}
-
-/* 375px: keep long words (GETAWAY, BLOWOUT, TUESDAY) and the tag inside the block. */
-@media (max-width: 479px) {
-  .ssb-block {
-    padding: 24px 16px;
-  }
-
-  .ssb-tag {
-    white-space: normal;
-  }
-}
-
-.ssb-tag {
-  padding: 8px 24px;
-  border-radius: 999px;
-  background: var(--s-cta-bg);
-  color: var(--s-cta-text);
-  /* Every --s-cta-bg / --s-cta-text pair clears 4.5:1; the size is >= 19px bold regardless. */
-  font-size: clamp(19px, 1.6vw, 22px);
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-@media (max-width: 767px) {
-  .ssb-block {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
-/* Offer-card additions (§4)                                                  */
-/* -------------------------------------------------------------------------- */
-
-/* Hero bonus-banner pill: overlap consecutive icons. */
-.ssb-pill-icon + .ssb-pill-icon {
-  margin-left: -4px;
-}
-
-/*
- * Hero bonus banner (§4). Sits in the V2 .includes-banner-cta slot, so it
- * inherits that slot's width, centring and 12px top radius; these rules only
- * restate the brand palette and match the flattened banner's proportions.
- */
-.ssb--brand {
-  --s-bg: var(--band-alt);
-  --s-accent: var(--band-accent);
-  --s-pill-icon: var(--accent-strong);
-  --s-cta-bg: var(--cta-bg);
-  --s-cta-text: var(--cta-ink);
-  --s-on: var(--band-ink);
-  overflow: hidden;
-  border-radius: 12px 12px 0 0;
-}
-
-.ssb--brand .ssb-pill {
-  min-height: 40px;
-  padding: 8px 16px;
-  border-radius: 0;
-}
-
-.ssb--brand .ssb-pill-text {
-  font-size: clamp(11px, 1.5vw, 15px);
-}
-
-.ssb--brand .ssb-block {
-  padding: 16px 24px;
-}
-
-.ssb--brand .ssb-big-word,
-.ssb--brand .ssb-big-text {
-  font-size: clamp(24px, 4.5vw, 44px);
-}
-
-/* Mobile: the slot goes full-bleed, so drop the corner radius with it. */
-@media screen and (max-width: 767px) {
-  .ssb--brand {
-    border-radius: 0;
-  }
-}
-
-/* -------------------------------------------------------------------------- */
 /* Additions to V2 components required by the copy spec                       */
 /* -------------------------------------------------------------------------- */
 
@@ -1204,31 +968,6 @@
  * wide viewports, so darken the top of the hero uniformly instead — the same
  * tonal balance the reference art had.
  */
-/*
- * §8 places the seasonal banner at "full content width", so it lines up with
- * the sections above and below rather than running edge to edge. The hero's
- * bonus banner is excluded — it sits in the hero's own slot.
- */
-.ssb:not(.ssb--brand) {
-  max-width: 1330px;
-  margin: 32px auto;
-  padding: 0 16px;
-}
-
-.ssb:not(.ssb--brand) .ssb-pill {
-  border-radius: 16px 16px 0 0;
-}
-
-.ssb:not(.ssb--brand) .ssb-block {
-  border-radius: 0 0 16px 16px;
-}
-
-@media screen and (max-width: 767px) {
-  .ssb:not(.ssb--brand) {
-    margin: 24px auto;
-  }
-}
-
 /* -------------------------------------------------------------------------- */
 /* More to Explore — two equal panels (§11)                                   */
 /* -------------------------------------------------------------------------- */
@@ -1541,6 +1280,19 @@
 .cf-action-cta svg {
   width: 18px;
   height: 18px;
+}
+
+/* Placeholder number (PHONE_CONFIRMED false): outlined text on the yellow panel,
+   no fill, no hover lift, so it does not read as a button. */
+.cf-action-cta--pending,
+.cf-action-cta--pending:hover {
+  margin: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  box-shadow: inset 0 0 0 2px #e3cf5a;
+  transform: none;
+  cursor: default;
 }
 
 /* --- Summary ------------------------------------------------------------- */
@@ -4166,28 +3918,6 @@ ul.includingslist {
   color: #0b2a4a;
 }
 
-/* Banner hover / press feedback (transform only). */
-.ssb {
-  transition: transform 180ms ease;
-}
-
-.ssb:hover {
-  transform: translateY(-2px);
-}
-
-.ssb:active {
-  transform: translateY(0) scale(0.995);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .ssb,
-  .ssb:hover,
-  .ssb:active {
-    transition: none;
-    transform: none;
-  }
-}
-
 ul.hs-includes {
   margin: 0;
   padding: 0;
@@ -4216,7 +3946,7 @@ h3.ta-band-headline {
 /* On the white band the white pill needs an edge to read as part of the banner. */
 
 /* -------------------------------------------------------------------------- */
-/* Hero price drop (PriceDrop): the hidden "99" holds the final width while    */
+/* Hero price drop (PriceDrop): the hidden final price holds the width while   */
 /* the live digits roll, so the circle never reflows.                          */
 /* -------------------------------------------------------------------------- */
 
