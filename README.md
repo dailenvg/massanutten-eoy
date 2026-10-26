@@ -1,6 +1,6 @@
 # massanutten-eoy
 
-VacationVIP end-of-year landing page and checkout flow for a 4-Day / 3-Night stay at Massanutten Resort® in Virginia's Shenandoah Valley: $99 per package, 2 Ski Day Passes included, 12 months to travel. Seven seasonal versions (winter, Black Friday, Cyber Monday, Travel Tuesday, Holiday Sale, New Year, late winter) swap by date; preview any with `?season=<key>`.
+VacationVIP end-of-year landing page and checkout flow for a 4-Day / 3-Night stay at Massanutten Resort® in Virginia's Shenandoah Valley: $104 per family (retail $748, 86% off), 2 Ski Day Passes included, 12 months to travel. Seven seasonal versions (winter, Black Friday, Cyber Monday, Travel Tuesday, Holiday Sale, New Year, late winter) swap by date; preview any with `?season=<key>`.
 
 Next.js 16 / React 19 / Framer Motion. Cloned from the Gatlinburg EOY template (`sognotours-eoy-gatlinburg-4-3-99-20260909`).
 

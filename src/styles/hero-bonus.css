@@ -105,11 +105,15 @@
   font-weight: 700;
 }
 
+/* Top-right, clear of "+2" and the label. Bottom-left collided with the
+   "Ski Day Passes" label wherever the card ran under ~110px wide (phones up to
+   ~570px, and the desktop slot at 992-1340px). */
 .hbb-card-chip {
   position: absolute;
-  left: 8px;
-  top: auto;
-  bottom: 8px;
+  top: 8px;
+  right: 8px;
+  left: auto;
+  bottom: auto;
   width: 14%;
   aspect-ratio: 1.3;
   border-radius: 2px;

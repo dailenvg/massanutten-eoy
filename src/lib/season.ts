@@ -2,8 +2,8 @@
  * Seasonal swap system for the Massanutten EOY page.
  *
  * One URL; every seasonal component reads from the single version resolved
- * here, so a cutover changes the top bar, hero badge/H1/urgency line, sale
- * banner, sticky bar label, footer sale line and meta title together.
+ * here, so a cutover changes the top bar, hero badge/H1/urgency line, sticky
+ * bar label, footer sale line and meta title together.
  *
  * The season is resolved once per request on the server (page.tsx, from the
  * clock or `?season=`) and passed down as a prop, so server and client render
@@ -35,23 +35,6 @@ export type CountdownMode =
   /** "[DD] days left" */
   | { kind: "days"; target: string };
 
-/** Icon export names from lib/icons used by the seasonal banner chips. */
-export type BannerIcon =
-  | "Tag" | "Gift" | "Sparkle" | "Laptop" | "Ticket" | "Luggage" | "Champagne" | "Snowflake" | "Mountains";
-
-/** Seasonal sale banner (Component F): photo stage, glass panel, three chips, CTA. */
-export type SeasonBanner = {
-  image: string;
-  /** Eyebrow heading reads "<name>: <hook>". */
-  name: string;
-  hook: string;
-  paragraph: string;
-  chips: readonly [SeasonChip, SeasonChip, SeasonChip];
-  cta: string;
-};
-
-export type SeasonChip = { icon: BannerIcon; text: string };
-
 export type SeasonAnimation = "none" | "sparkle" | "pixels" | "plane" | "lights" | "confetti";
 
 export type Season = {
@@ -70,49 +53,31 @@ export type Season = {
   stickyPkgLine1: string;
   stickyPkgLine2: string;
   metaTitle: string;
-  banner: SeasonBanner;
   animation: SeasonAnimation;
 };
 
+/** Source page title, prefixed with the version name. */
 const metaTitle = (versionName: string) =>
-  `Shenandoah Valley, Virginia ${versionName} | 4-Day/3-Night at Massanutten Resort, Only $99 Per Package`;
+  `${versionName}: 4-Day Massanutten Resort Getaway in Virginia’s Shenandoah Valley | $104 Stay + 2 Ski Day Passes (Save 86%)`;
 
 const h1 = (versionName: string) =>
-  `Shenandoah Valley, Virginia ${versionName}: 4-Day/3-Night at Massanutten Resort`;
-
-/** Snow tubing lane behind the seasonal banner (source resort-video thumbnail). */
-const BANNER_IMAGE = "/images/massanutten/snow-tubing-lane.webp";
-/** Holiday Season: the resort lodge on a snowy day. */
-const BANNER_IMAGE_HOLIDAY = "/images/massanutten/resort-lodge-snow.webp";
-/** New Year: a skier on the slopes at sunset. */
-const BANNER_IMAGE_NEW_YEAR = "/images/massanutten/skier-sunset.webp";
+  `Shenandoah Valley, Virginia ${versionName}: 4-Day/3-Night Stay at Massanutten Resort`;
 
 /** Winter base and the Jan 4+ state share every seasonal field. */
 const WINTER_SHARED: Omit<Season, "key" | "start" | "end"> = {
   topBarDesktop:
-    "WINTER GETAWAY • Shenandoah Valley 4 Days / 3 Nights for $99 • 2 Ski Day Passes included",
-  topBarMobile: "WINTER GETAWAY: 4 Days / 3 Nights, $99 + ski passes",
+    "WINTER GETAWAY • Shenandoah Valley 4-Days / 3-Nights for $104 • 2 Ski Day Passes included",
+  topBarMobile: "WINTER GETAWAY: 4-Days / 3-Nights, $104 + ski passes",
   countdown: { kind: "none" },
   badge: "WINTER GETAWAY",
   h1: h1("Winter Getaway"),
   urgency: "Hurry, the best dates book up fast!",
   stickyLabel: "4-Days / 3-Nights MASSANUTTEN WINTER GETAWAY",
-  stickyPkgLine1: "MASSANUTTEN WINTER",
-  stickyPkgLine2: "GETAWAY",
+  /* Break after the resort name: "MASSANUTTEN WINTER" (~176px at 15px/800) overran the
+     ~154px label column at 375px and wrapped to three lines. Same words, two lines. */
+  stickyPkgLine1: "MASSANUTTEN",
+  stickyPkgLine2: "WINTER GETAWAY",
   metaTitle: metaTitle("Winter Getaway"),
-  banner: {
-    image: BANNER_IMAGE,
-    name: "Winter Getaway",
-    hook: "4 Days / 3 Nights + 2 Ski Day Passes",
-    paragraph:
-      "Book 4 days and 3 nights at Massanutten Resort for $99 per package, with 2 Ski Day Passes included. Come for skiing, snow tubing, ice skating and the indoor WaterPark. You'll have 12 months to travel.",
-    chips: [
-      { icon: "Tag", text: "$99 per package" },
-      { icon: "Ticket", text: "2 Ski Day Passes included" },
-      { icon: "Snowflake", text: "Skiing and snow tubing" },
-    ],
-    cta: "Book Winter Getaway for $99",
-  },
   animation: "none",
 };
 
@@ -128,8 +93,8 @@ export const SEASONS: Season[] = [
     start: "2026-11-27T00:00:00-05:00",
     end: "2026-11-30T00:00:00-05:00",
     topBarDesktop:
-      "BLACK FRIDAY • Shenandoah Valley 4 Days / 3 Nights for $99 + 2 ski passes • Ends Sunday 11:59 PM ET",
-    topBarMobile: "BLACK FRIDAY: $99 getaway + ski passes • Ends Sun",
+      "BLACK FRIDAY • Shenandoah Valley 4-Days / 3-Nights for $104 + 2 ski passes • Ends Sunday 11:59 PM ET",
+    topBarMobile: "BLACK FRIDAY: $104 getaway + ski passes • Ends Sun",
     countdown: { kind: "dhm", target: "2026-11-29T23:59:59-05:00" },
     badge: "BLACK FRIDAY DEAL",
     h1: h1("Black Friday Deal"),
@@ -138,19 +103,6 @@ export const SEASONS: Season[] = [
     stickyPkgLine1: "BLACK FRIDAY",
     stickyPkgLine2: "GETAWAY",
     metaTitle: metaTitle("Black Friday Deal"),
-    banner: {
-      image: BANNER_IMAGE,
-      name: "Black Friday",
-      hook: "2 Ski Day Passes Included",
-      paragraph:
-        "This Black Friday, 4 days and 3 nights at Massanutten Resort is $99 per package, plus 2 Ski Day Passes. Shenandoah National Park and stunning caverns are all just a short drive away. Black Friday prices end Sunday night.",
-      chips: [
-        { icon: "Tag", text: "$99 per package, ends Sunday" },
-        { icon: "Ticket", text: "2 Ski Day Passes included" },
-        { icon: "Mountains", text: "In the Shenandoah Valley" },
-      ],
-      cta: "Book Black Friday for $99",
-    },
     animation: "sparkle",
   },
   {
@@ -158,8 +110,8 @@ export const SEASONS: Season[] = [
     start: "2026-11-30T00:00:00-05:00",
     end: "2026-12-01T00:00:00-05:00",
     topBarDesktop:
-      "CYBER MONDAY • 24 hours only • Shenandoah Valley 4 Days / 3 Nights for $99 + ski passes • Ends midnight ET",
-    topBarMobile: "CYBER MONDAY: 24 hrs only • $99 + ski passes",
+      "CYBER MONDAY • 24 hours only • Shenandoah Valley 4-Days / 3-Nights for $104 + ski passes • Ends midnight ET",
+    topBarMobile: "CYBER MONDAY: 24 hrs only • $104 + ski passes",
     countdown: { kind: "hms", target: "2026-12-01T00:00:00-05:00" },
     badge: "CYBER MONDAY DEAL",
     h1: h1("Cyber Monday Deal"),
@@ -168,19 +120,6 @@ export const SEASONS: Season[] = [
     stickyPkgLine1: "CYBER MONDAY",
     stickyPkgLine2: "GETAWAY",
     metaTitle: metaTitle("Cyber Monday Deal"),
-    banner: {
-      image: BANNER_IMAGE,
-      name: "Cyber Monday",
-      hook: "24 Hours Only, $99 + 2 Ski Day Passes",
-      paragraph:
-        "Today only, book 4 days and 3 nights at Massanutten Resort for $99 per package, with 2 Ski Day Passes included. You'll have 12 months to travel. Cyber Monday prices end at midnight.",
-      chips: [
-        { icon: "Laptop", text: "24 hours only" },
-        { icon: "Luggage", text: "12 months to travel" },
-        { icon: "Ticket", text: "2 Ski Day Passes included" },
-      ],
-      cta: "Book Cyber Monday for $99",
-    },
     animation: "pixels",
   },
   {
@@ -188,8 +127,8 @@ export const SEASONS: Season[] = [
     start: "2026-12-01T00:00:00-05:00",
     end: "2026-12-02T00:00:00-05:00",
     topBarDesktop:
-      "TRAVEL TUESDAY • Shenandoah Valley 4 Days / 3 Nights for $99 + 2 ski passes • Today only, ends midnight",
-    topBarMobile: "TRAVEL TUESDAY: $99 + ski passes • Today only",
+      "TRAVEL TUESDAY • Shenandoah Valley 4-Days / 3-Nights for $104 + 2 ski passes • Today only, ends midnight",
+    topBarMobile: "TRAVEL TUESDAY: $104 + ski passes • Today only",
     countdown: { kind: "hms", target: "2026-12-02T00:00:00-05:00" },
     badge: "TRAVEL TUESDAY DEAL",
     h1: h1("Travel Tuesday Deal"),
@@ -198,19 +137,6 @@ export const SEASONS: Season[] = [
     stickyPkgLine1: "TRAVEL TUESDAY",
     stickyPkgLine2: "DEAL",
     metaTitle: metaTitle("Travel Tuesday Deal"),
-    banner: {
-      image: BANNER_IMAGE,
-      name: "Travel Tuesday",
-      hook: "$99 Getaway + 2 Ski Day Passes",
-      paragraph:
-        "Lock in 4 days and 3 nights at Massanutten Resort for $99 per package today, then pick your dates any time in the next 12 months. 2 Ski Day Passes come with it. Travel Tuesday prices end tonight.",
-      chips: [
-        { icon: "Luggage", text: "Travel any time in 12 months" },
-        { icon: "Ticket", text: "2 Ski Day Passes included" },
-        { icon: "Mountains", text: "In the Shenandoah Valley" },
-      ],
-      cta: "Book Travel Tuesday for $99",
-    },
     animation: "plane",
   },
   {
@@ -218,8 +144,8 @@ export const SEASONS: Season[] = [
     start: "2026-12-02T00:00:00-05:00",
     end: "2026-12-26T00:00:00-05:00",
     topBarDesktop:
-      "HOLIDAY SALE • Get a getaway your family would love! • Shenandoah Valley 4 Days / 3 Nights for $99 + 2 ski passes • Thru Dec 25",
-    topBarMobile: "HOLIDAY SALE: $99 + ski passes • Thru Dec 25",
+      "HOLIDAY SALE • Get a getaway your family would love! • Shenandoah Valley 4-Days / 3-Nights for $104 + 2 ski passes • Thru Dec 25",
+    topBarMobile: "HOLIDAY SALE: $104 + ski passes • Thru Dec 25",
     countdown: { kind: "days", target: "2026-12-25T23:59:59-05:00" },
     badge: "HOLIDAY SALE",
     h1: h1("Holiday Sale"),
@@ -228,19 +154,6 @@ export const SEASONS: Season[] = [
     stickyPkgLine1: "HOLIDAY SALE",
     stickyPkgLine2: "GETAWAY",
     metaTitle: metaTitle("Holiday Sale"),
-    banner: {
-      image: BANNER_IMAGE_HOLIDAY,
-      name: "Holiday Sale",
-      hook: "Give a Getaway, $99 + 2 Ski Day Passes",
-      paragraph:
-        "Give a getaway this year: 4 days and 3 nights at Massanutten Resort for $99 per package, with 2 Ski Day Passes. Skiing, snow tubing and the indoor WaterPark are all at the resort. Holiday Sale prices end December 25.",
-      chips: [
-        { icon: "Ticket", text: "2 Ski Day Passes included" },
-        { icon: "Snowflake", text: "Skiing and snow tubing" },
-        { icon: "Tag", text: "$99 through December 25" },
-      ],
-      cta: "Book Holiday Sale for $99",
-    },
     animation: "lights",
   },
   {
@@ -248,29 +161,17 @@ export const SEASONS: Season[] = [
     start: "2026-12-26T00:00:00-05:00",
     end: "2027-01-04T00:00:00-05:00",
     topBarDesktop:
-      "NEW YEAR BLOWOUT • Start 2027 with a trip booked • Shenandoah Valley 4 Days / 3 Nights, $99 • Ends Jan 3",
-    topBarMobile: "NEW YEAR BLOWOUT: $99 getaway • Ends Jan 3",
+      "NEW YEAR BLOWOUT • Start 2027 with a trip booked • Shenandoah Valley 4-Days / 3-Nights, $104 • Ends Jan 3",
+    topBarMobile: "NEW YEAR BLOWOUT: $104 getaway • Ends Jan 3",
     countdown: { kind: "days", target: "2027-01-03T23:59:59-05:00" },
     badge: "NEW YEAR BLOWOUT",
     h1: h1("New Year Blowout"),
     urgency: "New Year prices end January 3!",
     stickyLabel: "4-Days / 3-Nights NEW YEAR BLOWOUT DEAL",
-    stickyPkgLine1: "NEW YEAR BLOWOUT",
-    stickyPkgLine2: "DEAL",
+    /* Same three-line wrap as winter at 375px; break moved, words unchanged. */
+    stickyPkgLine1: "NEW YEAR",
+    stickyPkgLine2: "BLOWOUT DEAL",
     metaTitle: metaTitle("New Year Blowout"),
-    banner: {
-      image: BANNER_IMAGE_NEW_YEAR,
-      name: "New Year Blowout",
-      hook: "$99 Getaway + 2 Ski Day Passes",
-      paragraph:
-        "Start 2027 with a trip booked: 4 days and 3 nights at Massanutten Resort for $99 per package, plus 2 Ski Day Passes. You'll have 12 months to travel. New Year prices end January 3.",
-      chips: [
-        { icon: "Champagne", text: "$99 per package, ends January 3" },
-        { icon: "Ticket", text: "2 Ski Day Passes included" },
-        { icon: "Luggage", text: "12 months to travel" },
-      ],
-      cta: "Book New Year Blowout for $99",
-    },
     animation: "confetti",
   },
   {

@@ -28,7 +28,7 @@ const LIST = { hidden: {}, show: { transition: REVEAL_STAGGER } };
 const ITEM = { hidden: { opacity: 0, y: REVEAL_RISE }, show: { opacity: 1, y: 0, transition: TWEEN_COMPONENT } };
 const ITEM_REDUCED = { hidden: { opacity: 0 }, show: { opacity: 1, transition: TWEEN_COMPONENT } };
 
-/** Destination photo stage: Ripley's hero with the price tag, two shots beside it. */
+/** Destination photo stage: indoor WaterPark hero with the price tag, two resort shots beside it. */
 function PhotoStage({ season, price }: { season: Season; price: string }) {
   const { hero, side } = EXTRA_VACATION_PHOTOS;
   return (
@@ -43,7 +43,7 @@ function PhotoStage({ season, price }: { season: Season; price: string }) {
       </figure>
       {side.map((p) => (
         <img key={p.src} className="ev-side" src={p.src} srcSet={srcSetFor(p.src)} sizes="260px" alt={p.alt} width={p.width} height={p.height}
-          loading="lazy" decoding="async" />
+          loading="lazy" decoding="async" style={{ objectPosition: p.focus }} />
       ))}
     </div>
   );

@@ -183,7 +183,7 @@ export const PRICE_DROP = { duration: 0.6, delay: 0.35, ease: EASE_OVERSHOOT } a
 export const PRICE_DROP_FROM = -56;
 /** Digits roll up to the final price while the number falls. */
 export const PRICE_TICK = { duration: 0.7, delay: 0.3, ease: EASE_OUT } as const;
-/** "$540 VALUE" then "PER PACKAGE" fade in after the landing. */
+/** "$748 VALUE" then "PER FAMILY" fade in after the landing. */
 export const PRICE_LABELS = { delayChildren: 0.75, staggerChildren: 0.18 } as const;
 
 /* -------------------------------------------------------------------------- */

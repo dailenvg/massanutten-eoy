@@ -114,6 +114,22 @@ const LOOKS: Record<SeasonKey, Look> = {
 /** Bottom-line width: Montserrat 800 at 36px runs ≈ 24.5px per character. */
 const lineWidth = (text: string) => Math.min(Math.round(text.length * 24.5), 470);
 
+/**
+ * Top line box. "MASSANUTTEN RESORT" runs ≈ 531px natural at 44px; 456 keeps the
+ * same ~86% horizontal compression the 16-character template line had, and still
+ * clears the frame ends at 94 / 600 by ~30 / ~20px.
+ */
+const TOP_LENGTH = 456;
+/**
+ * Middle line box. "SHENANDOAH" runs ≈ 700px natural at 94px, so the old
+ * spacing-only fit into 620 pulled the glyphs into each other. Glyph scaling
+ * into 640 (≈ 91%), centred, keeps clear letter gaps and ~24px inside the frame.
+ */
+const MIDDLE_LENGTH = 640;
+
+/** "SHENANDOAH" -> "Shenandoah", so screen readers say the word instead of spelling it. */
+const spoken = (text: string) => text.charAt(0) + text.slice(1).toLowerCase();
+
 /* ----------------------------------------------------- bottom-line motion -- */
 
 type Entrance = { initial: TargetAndTransition; animate: TargetAndTransition; transition: Transition };
@@ -279,7 +295,7 @@ export default function HeroLockup({ season }: { season: Season }) {
       width={W}
       height={206}
       role="img"
-      aria-label={`${LOCKUP_LINES.top} ${LOCKUP_LINES.middle}, ${winter ? LOCKUP_LINES.bottom : season.badge}`}
+      aria-label={`${LOCKUP_LINES.top}, ${spoken(LOCKUP_LINES.middle)}, ${winter ? LOCKUP_LINES.bottom : season.badge}`}
     >
       <defs>
         <filter id={`${uid}-shadow`} x="-5%" y="-10%" width="110%" height="130%">
@@ -313,10 +329,10 @@ export default function HeroLockup({ season }: { season: Season }) {
       </g>
 
       <g fill="#fff" filter={`url(#${uid}-shadow)`}>
-        <text x={CX} y={33} textAnchor="middle" fontSize={44} fontWeight={800} textLength={400} lengthAdjust="spacingAndGlyphs">
+        <text x={CX} y={33} textAnchor="middle" fontSize={44} fontWeight={800} textLength={TOP_LENGTH} lengthAdjust="spacingAndGlyphs">
           {top}
         </text>
-        <text x={40} y={134} fontSize={94} fontWeight={800} textLength={620} lengthAdjust="spacing">
+        <text x={CX} y={134} textAnchor="middle" fontSize={94} fontWeight={800} textLength={MIDDLE_LENGTH} lengthAdjust="spacingAndGlyphs">
           {LOCKUP_LINES.middle}
         </text>
       </g>

@@ -1,21 +1,36 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { lockBody, unlockBody } from "@/lib/scroll-lock";
+import { RESORT_VIDEO_CAPTIONS } from "@/lib/offer";
 
 /**
  * Full-screen resort tour player. Any element with the `.playvideo` class opens it
  * (hero play icon, "Resort video" menu item, resort-details thumbnail).
  * `src` is lib/offer RESORT_VIDEO_SRC; the page skips the player while it is null.
+ *
+ * Dialog behaviour (matches PhoneModal): focus moves to Close and is trapped
+ * between the video controls and Close; Esc, Close and a backdrop click all
+ * close it; focus returns to the trigger that opened it; the page is
+ * scroll-locked. Playback only starts from that explicit click, never on load.
  */
 export default function ResortVideoModal({ src }: { src: string }) {
   const [open, setOpen] = useState(false);
+  const openRef = useRef(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const lastFocused = useRef<HTMLElement | null>(null);
+  const scrollY = useRef(0);
 
-  const openVideo = useCallback(() => {
-    lastFocused.current = document.activeElement as HTMLElement | null;
+  const openVideo = useCallback((trigger: HTMLElement | null) => {
+    if (openRef.current) return;
+    openRef.current = true;
+    // The trigger, not activeElement: Safari does not focus links on click, so
+    // activeElement would be <body> and focus would be lost on close.
+    lastFocused.current = trigger ?? (document.activeElement as HTMLElement | null);
+    scrollY.current = window.scrollY;
+    lockBody(scrollY.current);
     setOpen(true);
     // Move focus into the dialog once it is visible.
     requestAnimationFrame(() => closeBtnRef.current?.focus());
@@ -27,21 +42,41 @@ export default function ResortVideoModal({ src }: { src: string }) {
   }, [src]);
 
   const closeVideo = useCallback(() => {
+    if (!openRef.current) return;
+    openRef.current = false;
     const video = videoRef.current;
     if (video) {
       video.pause();
       video.currentTime = 0;
     }
-    setOpen((wasOpen) => {
-      if (wasOpen) lastFocused.current?.focus?.();
-      return false;
-    });
+    setOpen(false);
+    unlockBody(scrollY.current);
+    lastFocused.current?.focus?.();
   }, []);
 
   useEffect(() => {
     if (!open) return;
+    // Document-level so Esc and the trap still hold when focus has fallen to <body>.
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") closeVideo();
+      if (e.key === "Escape") {
+        closeVideo();
+        return;
+      }
+      if (e.key !== "Tab") return;
+      const video = videoRef.current;
+      const btn = closeBtnRef.current;
+      if (!video || !btn) return;
+      const active = document.activeElement;
+      if (active !== video && active !== btn) {
+        e.preventDefault();
+        (e.shiftKey ? video : btn).focus();
+      } else if (e.shiftKey && active === video) {
+        e.preventDefault();
+        btn.focus();
+      } else if (!e.shiftKey && active === btn) {
+        e.preventDefault();
+        video.focus();
+      }
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -50,9 +85,10 @@ export default function ResortVideoModal({ src }: { src: string }) {
   useEffect(() => {
     const onClick = (e: Event) => {
       const target = e.target as Element | null;
-      if (!target || !target.closest || !target.closest(".playvideo")) return;
+      const trigger = target && typeof target.closest === "function" ? target.closest<HTMLElement>(".playvideo") : null;
+      if (!trigger) return;
       e.preventDefault();
-      openVideo();
+      openVideo(trigger);
     };
     const onVisibilityChange = () => {
       if (document.hidden) closeVideo();
@@ -75,24 +111,21 @@ export default function ResortVideoModal({ src }: { src: string }) {
       aria-modal="true"
       aria-label="Resort video"
       hidden={!open}
-      onKeyDown={(e) => {
-        // Only two focusables (video controls, close): keep Tab inside the dialog.
-        if (e.key !== "Tab") return;
-        const video = videoRef.current;
-        const btn = closeBtnRef.current;
-        if (!video || !btn) return;
-        if (e.shiftKey && document.activeElement === video) {
-          e.preventDefault();
-          btn.focus();
-        } else if (!e.shiftKey && document.activeElement === btn) {
-          e.preventDefault();
-          video.focus();
-        }
+      // Backdrop click closes; clicks on the video or Close never reach here as the target.
+      onClick={(e) => {
+        if (e.target === e.currentTarget) closeVideo();
       }}
     >
-      <div className="videowrapper">
+      <div
+        className="videowrapper"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) closeVideo();
+        }}
+      >
         <div className="code-embed w-embed">
-          <video controls id="video" style={{ width: "100%" }} ref={videoRef}></video>
+          <video controls playsInline preload="none" id="video" style={{ width: "100%" }} ref={videoRef}>
+            {RESORT_VIDEO_CAPTIONS ? <track kind="captions" src={RESORT_VIDEO_CAPTIONS} srcLang="en" label="English" default /> : null}
+          </video>
         </div>
       </div>
       <button

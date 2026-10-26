@@ -14,13 +14,6 @@
 /** Extra Vacation add-on details (checkout upsell). */
 export const EXTRA_VACATION_DETAILS = "[Extra Vacation details TBD]";
 /**
- * Retail value shown as "<value> VALUE". The source page shows "Retail $748"
- * against a $104 price; this EOY offer is $99, so the figure needs confirming.
- */
-export const RETAIL_VALUE = "[$XXX]";
-/** Percent-off tag beside the offer card price, one line per entry (source: "86% OFF!" at $104). */
-export const PERCENT_OFF_LINES = ["[XX%]", "OFF!"] as const;
-/**
  * Checkout tickets step. No Massanutten ticket product is specified, so name
  * and price stay placeholders.
  */
@@ -31,21 +24,32 @@ export const TICKET_PRICE_NUMBER: number | null = null;
 /** The source page lists no phone number. "#" keeps every call link inert until one is confirmed. */
 export const PHONE_DISPLAY = "[PHONE TBD]";
 export const PHONE_HREF = "#";
-/**
- * Resort tour video. The source page streams it from Cloudflare Stream (HLS),
- * which the template's <video> player cannot play cross-browser. null hides
- * every resort-video trigger and the player; set an MP4 path to restore them.
- */
-export const RESORT_VIDEO_SRC: string | null = null;
+/** False while PHONE_HREF is the placeholder: call links render as plain text, so nothing clickable is dead. */
+export const PHONE_CONFIRMED = PHONE_HREF !== "#";
 
 /* -------------------------------------------------------------------------- */
-/* Confirmed offer facts                                                      */
+/* Confirmed offer facts (price, retail and discount verbatim from the source) */
 /* -------------------------------------------------------------------------- */
 
-export const PRICE = "$99";
-export const PRICE_NUMBER = 99;
+export const PRICE = "$104";
+export const PRICE_NUMBER = 104;
+/** Retail value shown as "<value> VALUE" (source: "Retail $748"). */
+export const RETAIL_VALUE = "$748";
 export const VALUE_LINE = `${RETAIL_VALUE} VALUE`;
-export const PRICE_UNIT = "Per Package";
+export const PRICE_UNIT = "Per Family";
+/** Percent-off tag beside the offer card price, one line per entry (source: "86% OFF!"). */
+export const PERCENT_OFF_LINES = ["86%", "OFF!"] as const;
+/**
+ * Resort tour video: the source page's Cloudflare Stream reel, re-encoded to
+ * H.264/AAC MP4 with faststart. null hides every resort-video trigger and the player.
+ */
+export const RESORT_VIDEO_SRC: string | null = "/videos/resort-tour.mp4";
+/**
+ * WebVTT captions for the tour (WCAG 2.2 AA 1.2.2 if the reel has speech or
+ * meaningful sound). null renders no <track>; set e.g. "/videos/resort-tour.en.vtt".
+ */
+export const RESORT_VIDEO_CAPTIONS: string | null = null;
+
 export const NIGHTS = 3;
 export const NIGHTS_LABEL = "4-Days / 3-Nights";
 export const NIGHTS_LABEL_TIGHT = "4-Days/3-Nights";
@@ -103,7 +107,7 @@ export const HERO_PERKS = [
 ] as const;
 
 export const HERO_BONUS_BANNER = {
-  pillText: "INCLUDES: 2 SKI DAY PASSES — VALID FOR SLOPE ACCESS DURING YOUR STAY",
+  pillText: "INCLUDES: 2 SKI DAY PASSES, VALID FOR SLOPE ACCESS DURING YOUR STAY",
   /** The same line split for the two-line white panel. */
   lead: "INCLUDES: 2 SKI DAY PASSES",
   sub: "VALID FOR SLOPE ACCESS",
@@ -122,7 +126,7 @@ export const HERO_BONUS_BANNER = {
 /* -------------------------------------------------------------------------- */
 
 export const META_DESCRIPTION =
-  "4-Day/3-Night Stay for $99 at Massanutten Resort in Virginia’s Shenandoah Valley. A family getaway with 2 Ski Day Passes. You'll have 12 months to travel.";
+  "4-Day/3-Night Stay for $104 at Massanutten Resort in Virginia’s Shenandoah Valley. Save 86% on a family getaway with 2 Ski Day Passes.";
 
 /** Byte-identical, do not edit. */
 export const TIMESHARE_DISCLOSURE =
@@ -315,10 +319,10 @@ export const BONUS_SUBHEADING = "2 Ski Day Passes";
 /** Mark on the seam between the two passes. */
 export const BONUS_CONNECTOR = "+";
 
-/** One card per pass: panel headline, then the pass art's label, amount unit and key line. */
+/** One card per pass: panel headline (two fixed lines: lead, rest), then the pass art's label, day numeral, "Day" unit and key line. */
 export const BONUS_CARDS = [
-  { heading: "SKI DAY PASS", label: "Ski Day", unit: "Pass", note: "Slope access" },
-  { heading: "SKI DAY PASS", label: "Ski Day", unit: "Pass", note: "One day each" },
+  { day: 1, headingLead: "DAY 1", headingRest: "SKI PASS", label: "Ski Pass", unit: "Day", note: "Slope access" },
+  { day: 2, headingLead: "DAY 2", headingRest: "SKI PASS", label: "Ski Pass", unit: "Day", note: "One day each" },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
@@ -335,7 +339,7 @@ export const EXTRA_VACATION_LINE = `Add an Extra Vacation for just ${ADDON_EXTRA
  */
 export const EXTRA_VACATION_TITLE = "Add an Extra Vacation";
 export const EXTRA_VACATION_LEAD =
-  "Make room for more of the Shenandoah Valley. Add an Extra Vacation to your package at Massanutten Resort, in the heart of Virginia's Shenandoah Valley.";
+  "Make room for more of the Shenandoah Valley. Add an Extra Vacation to your Massanutten Resort package.";
 export const EXTRA_VACATION_PRICE_NOTE = "add-on";
 export const EXTRA_VACATION_INCLUDED_LABEL = "Why add it";
 
@@ -343,16 +347,19 @@ export type ExtraVacationPerk = { icon: "Mountains" | "Waves" | "CalendarCheck";
 
 export const EXTRA_VACATION_PERKS: readonly ExtraVacationPerk[] = [
   { icon: "Mountains", title: "In the Shenandoah Valley", text: "Shenandoah National Park and stunning caverns are all just a short drive away." },
-  { icon: "Waves", title: "Resort days, your way", text: "Skiing, snow tubing, a full-service spa and the indoor WaterPark on site." },
+  { icon: "Waves", title: "Resort days, your way", text: "Skiing, snow tubing, a full-service spa, and the indoor WaterPark, all on site." },
   { icon: "CalendarCheck", title: "Details with your agent", text: "Add it now, and your vacation agent will go over the details with you." },
 ];
 
-/** Resort photos from the source page: indoor WaterPark hero, ski school and slope views beside it. */
+/**
+ * Resort photos from the source page: indoor WaterPark hero, ski school and slope views beside it.
+ * `focus` is each side photo's object-position in its cover crop (the snowboarder sits at x 6-18%).
+ */
 export const EXTRA_VACATION_PHOTOS = {
   hero: { src: "/images/massanutten/indoor-waterpark.webp", alt: "Indoor waterpark with families enjoying pool and water activities", width: 1024, height: 564 },
   side: [
-    { src: "/images/massanutten/ski-instructor-young-skier.webp", alt: "Smiling ski instructor kneeling to talk with a young skier in a pink jacket", width: 1024, height: 568 },
-    { src: "/images/massanutten/snowboarder-mountain-view.webp", alt: "Snowboarder taking in snowy mountain views from the top of a Massanutten slope", width: 1024, height: 566 },
+    { src: "/images/massanutten/ski-instructor-young-skier.webp", alt: "Smiling ski instructor kneeling to talk with a young skier in a pink jacket", width: 1024, height: 568, focus: "50% 50%" },
+    { src: "/images/massanutten/snowboarder-mountain-view.webp", alt: "Snowboarder taking in snowy mountain views from the top of a Massanutten slope", width: 1024, height: 566, focus: "0% 50%" },
   ],
 } as const;
 

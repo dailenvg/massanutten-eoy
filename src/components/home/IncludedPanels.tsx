@@ -8,6 +8,7 @@ import { srcSetFor } from "@/lib/image-variants";
 import {
   PACKAGE_NAME,
   PRICE_NUMBER,
+  PRICE_UNIT,
   RESORT_AMENITIES,
   RESORT_UPPER,
   RETAIL_VALUE,
@@ -77,11 +78,15 @@ function CheckList({ items }: { items: readonly string[] }) {
 /** Panel photos cover a 4:3 frame (569x427 on desktop), so a 16:10 photo renders ~684px wide. */
 const PANEL_SIZES = "(max-width: 767px) 100vw, 684px";
 
-/** Tab photo — the right-hand column of the two-column panel. */
-function PanelImage({ src, alt }: { src: string; alt: string }) {
+/**
+ * Tab photo — the right-hand column of the two-column panel. `focus` is the
+ * object-position for photos whose subject sits off-centre, so the 4:3 / 3:2
+ * crop keeps the subject the alt text describes.
+ */
+function PanelImage({ src, alt, focus }: { src: string; alt: string; focus?: string }) {
   return (
     <figure className="rd-panel-media">
-      <img src={src} srcSet={srcSetFor(src)} sizes={PANEL_SIZES} alt={alt} loading="lazy" width={1024} height={768} decoding="async" />
+      <img src={src} srcSet={srcSetFor(src)} sizes={PANEL_SIZES} alt={alt} loading="lazy" width={1024} height={768} decoding="async" style={focus ? { objectPosition: focus } : undefined} />
     </figure>
   );
 }
@@ -96,7 +101,7 @@ function TabOfferCard() {
           <div className="pb-circle">
             <div className="pb-price-old">{RETAIL_VALUE} VALUE</div>
             <div className="pb-price-new"><span className="pb-dollar">$</span>{PRICE_NUMBER}</div>
-            <div className="pb-footer-text">Per Package</div>
+            <div className="pb-footer-text">{PRICE_UNIT}</div>
           </div>
         </div>
       </div>
@@ -177,7 +182,7 @@ function PanelBody({ tab, season }: { tab: TabKey; season: Season }) {
               <CheckList items={holiday ? THIS_WINTER_HOLIDAY : THIS_WINTER_LATE} />
             </div>
             {holiday
-              ? <PanelImage src="/images/massanutten/snowboarder-mountain-view.webp" alt="Snowboarder taking in snowy mountain views from the top of a Massanutten slope" />
+              ? <PanelImage src="/images/massanutten/snowboarder-mountain-view.webp" alt="Snowboarder taking in snowy mountain views from the top of a Massanutten slope" focus="left center" />
               : <PanelImage src="/images/massanutten/snow-tubing-lane.webp" alt="Guests snow tubing down a Massanutten tubing lane" />}
           </div>
           <TabOfferCard />

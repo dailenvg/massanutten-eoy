@@ -12,6 +12,7 @@ import {
   COMPANY_LINE,
   CONFIRMATION_EMAIL_HERO_ALT,
   CONFIRMATION_EMAIL_PREHEADER,
+  PHONE_CONFIRMED,
   PHONE_DISPLAY,
   PHONE_HOURS,
   PHONE_HREF,
@@ -66,6 +67,8 @@ export const CONFIRMATION_COPY = {
   cta: `Call now: ${PHONE_DISPLAY}`,
   phoneHref: PHONE_HREF,
   phoneDisplay: PHONE_DISPLAY,
+  /** False while the number is a placeholder: the call CTA and link render as plain text. */
+  phoneConfirmed: PHONE_CONFIRMED,
   summaryTitle: "Your vacation summary",
   packageTitle: "Vacation package",
   travelLine: TRAVEL_LINE,

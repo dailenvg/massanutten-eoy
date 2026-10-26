@@ -16,7 +16,6 @@ import "@/styles/season-accents.css";
 // Rebuilt home components (load last so they win over the export layers above).
 import "@/styles/offer-price.css";
 import "@/styles/phone-modal.css";
-import "@/styles/seasonal-sale-banner.css";
 import "@/styles/bonus-cta.css";
 import "@/styles/hero-bonus.css";
 import "@/styles/frost.css";

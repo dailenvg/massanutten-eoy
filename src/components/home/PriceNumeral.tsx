@@ -7,7 +7,7 @@ import { PRICE_TICK } from "@/lib/motion";
 import { PRICE_NUMBER } from "@/lib/offer";
 
 /**
- * "$99" whose digits roll up from 0 on load. Screen readers get the static
+ * "$104" whose digits roll up from 0 on load. Screen readers get the static
  * price; the animated digits are hidden from them. A placeholder holds the
  * final width, so nothing shifts while the digits change. Size and colour
  * come from the caller's class; `.pb-dollar` / `.pb-digits` are the parts.

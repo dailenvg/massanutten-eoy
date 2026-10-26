@@ -99,8 +99,11 @@ function hero(origin: string) {
 
 const strong = (html: string) => html.replace(/<strong>/g, `<strong style="font-weight:700;color:${T.strong};">`);
 
+/** Call link, or bold text while the number is a placeholder (no dead link). */
 const phoneLink = () =>
-  `<a href="${C.phoneHref}" style="display:inline-block;padding:11px 0;line-height:22px;color:${T.heading};text-decoration:underline;font-weight:700;white-space:nowrap;">${C.phoneDisplay}</a>`;
+  C.phoneConfirmed
+    ? `<a href="${C.phoneHref}" style="display:inline-block;padding:11px 0;line-height:22px;color:${T.heading};text-decoration:underline;font-weight:700;white-space:nowrap;">${C.phoneDisplay}</a>`
+    : `<strong style="display:inline-block;padding:11px 0;line-height:22px;color:${T.heading};font-weight:700;white-space:nowrap;">${C.phoneDisplay}</strong>`;
 
 function headline() {
   return section(
@@ -111,8 +114,26 @@ function headline() {
   );
 }
 
+/**
+ * Placeholder number: a tinted info box, not a link. An orange-outlined,
+ * full-width, uppercase pill still read as a (ghost) button in the CTA colour,
+ * so this uses the note tint, an 8px radius and sentence case instead.
+ * #205272 on #e9f3fb is ~7.6:1. No `vv-cta` class: its mobile rules target links.
+ */
+function pendingCta(label: string) {
+  return section(
+    24,
+    `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="${T.note}" style="background-color:${T.note};border-radius:8px;">
+  <tr><td align="center" style="padding:16px 24px;font-family:${T.font};font-size:16px;font-weight:700;line-height:24px;color:${T.heading};">${label}</td></tr>
+</table>`,
+    "vv-pad",
+    ' align="center"',
+  );
+}
+
 /** Gradient pill; Outlook gets a VML roundrect since it ignores border-radius and gradients. */
 function cta() {
+  if (!C.phoneConfirmed) return pendingCta(C.cta);
   const label = C.cta.toUpperCase();
   return section(
     24,

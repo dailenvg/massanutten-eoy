@@ -238,7 +238,7 @@
           margin: 0;
           white-space: nowrap;
         }
-        /* Half-moon overflows ~17px below $99 — restore Massanutten clearance padding. */
+        /* Half-moon overflows ~17px below the price — restore Massanutten clearance padding. */
         body.property-sogno-wg-orlando-99-eoy .priceanddiscount.pricing-section--highlighted {
           padding-block: 16px;
         }

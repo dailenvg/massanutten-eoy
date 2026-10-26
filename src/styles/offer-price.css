@@ -4,8 +4,8 @@
 
 /*
  * One dominant numeral. Hierarchy, top to bottom: sale-name chip + struck
- * retail value (small, one line), then "$99" at display size with the
- * per-package label set beside it. Accents read from the site-wide season
+ * retail value (small, one line), then "$104" at display size with the
+ * price-unit label set beside it. Accents read from the site-wide season
  * tokens, so the chip and numeral swap with every cutover.
  *
  * Contrast: --accent-deep on --accent-soft >= 4.5:1 (season-accents.css);
@@ -84,11 +84,17 @@
  * numeral + label stay centred in the space to its right via flexible spacer
  * columns on either side of them.
  */
+/*
+ * column-gap 8px: the four gaps include the two around the flexible spacers,
+ * which are wasted once the spacers collapse. At 16px, "86% OFF!" + a 3-digit
+ * "$104" at 88px + "PER FAMILY" needed ~373px against the 360px row in the
+ * 416px hero card. At 8px it needs ~348px; the spacers still centre it.
+ */
 .op-main:has(.op-off) {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto auto minmax(0, 1fr);
   align-items: center;
-  column-gap: 16px;
+  column-gap: 8px;
   align-self: stretch;
   margin-left: -16px;
 }
@@ -150,9 +156,11 @@
   color: var(--accent-strong);
 }
 
-/* Per-package label: stacked beside the numeral, divided by an accent rule. */
+/* Price-unit label: stacked beside the numeral, divided by an accent rule. */
+/* min-content: one word per line, sized to the longest word, so "PER FAMILY"
+   never spills past the box (6ch was narrower than "FAMILY"). */
 .op-unit {
-  max-width: 6ch;
+  width: min-content;
   padding-left: 16px;
   border-left: 3px solid var(--accent-strong);
   color: var(--band);
