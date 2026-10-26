@@ -1,0 +1,406 @@
+/* -------------------------------------------------------------------------- */
+/* Phone trigger (PhoneTrigger): "Prefer to talk? Book by phone."              */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Outlined pill everywhere so it reads as the secondary action next to the
+ * filled Reserve button. Text uses --accent-deep (>= 4.5:1 on white); on the
+ * dark bonus bar it flips to --band-ink. Hover fills with the CTA palette.
+ * Scale on hover/press comes from Framer Motion (PRESS tokens).
+ */
+.phone-trigger {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 24px;
+  border: 2px solid var(--accent-strong);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--accent-deep);
+  font-family: Roboto, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+}
+
+.phone-trigger:hover {
+  background: var(--cta-bg);
+  border-color: var(--cta-bg);
+  color: var(--cta-ink);
+}
+
+.phone-trigger:active {
+  background: var(--cta-hover);
+  border-color: var(--cta-hover);
+  color: var(--cta-hover-ink);
+}
+
+.phone-trigger:focus-visible {
+  outline: 3px solid var(--band);
+  outline-offset: 2px;
+}
+
+.phone-trigger-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Offer card: full width under Reserve. */
+.phone-trigger--card {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Bonus bar: sits on --band-deep, so the outline goes light. */
+.phone-trigger--bonus {
+  border-color: var(--band-ink);
+  background: transparent;
+  color: var(--band-ink);
+}
+
+.phone-trigger--bonus:focus-visible {
+  outline-color: var(--band-ink);
+}
+
+/* Submenu pill: same 48px box as "Reserve it now" beside it. */
+.phone-trigger--nav {
+  flex: 0 0 auto;
+  height: 48px;
+  padding-inline: 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.phone-trigger--nav .phone-trigger-icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media screen and (max-width: 991px) {
+  .hero-submenu .phone-trigger--nav {
+    display: none;
+  }
+}
+
+/* Sticky bar: compact pill left of Reserve. */
+.phone-trigger--sticky {
+  min-height: 48px;
+  padding: 8px 16px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.phone-trigger--sticky .phone-trigger-icon {
+  width: 18px;
+  height: 18px;
+}
+
+@media screen and (max-width: 767px) {
+  .property-sogno-wg-orlando-99-eoy .msc-actions {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .phone-trigger {
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Phone modal (PhoneModal)                                                   */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Palette: the header is the season's band (--s-bg / --s-on from
+ * seasonal.css [data-season]); the call button and headset mark use the
+ * season CTA pair (--s-cta-bg / --s-cta-text, every season >= 4.62:1, so the
+ * 12px label needs no per-season override). Body is white with navy text.
+ */
+.pm {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.pm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 19, 48, 0.64);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.pm-panel {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  max-height: calc(100dvh - 32px);
+  overflow: hidden auto;
+  border-radius: 24px;
+  background: #ffffff;
+  box-shadow: 0 32px 80px rgba(7, 19, 48, 0.45);
+}
+
+/* Header ------------------------------------------------------------------ */
+
+.pm-head {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 48px 24px 32px;
+  overflow: hidden;
+  background: var(--s-bg);
+  color: var(--s-on);
+  text-align: center;
+}
+
+/* Conic light sweep in the season accent, rotated by ModalSeasonFx. */
+.pm-rays {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: 640px;
+  height: 640px;
+  margin: -320px 0 0 -320px;
+  border-radius: 50%;
+  background: repeating-conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--s-accent) 22%, transparent) 0deg 8deg,
+    transparent 8deg 24deg
+  );
+  -webkit-mask-image: radial-gradient(circle, #000 0%, transparent 62%);
+  mask-image: radial-gradient(circle, #000 0%, transparent 62%);
+  pointer-events: none;
+}
+
+.pm-fx {
+  z-index: -1;
+}
+
+.pm-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.16);
+  color: var(--s-on);
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.pm-close:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.pm-close:active {
+  background: rgba(255, 255, 255, 0.36);
+}
+
+.pm-close:focus-visible {
+  outline: 3px solid var(--s-on);
+  outline-offset: 2px;
+}
+
+.pm-close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pm-mark {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: var(--s-cta-bg);
+  color: var(--s-cta-text);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--s-accent) 24%, transparent);
+}
+
+.pm-mark-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid var(--s-accent);
+  border-radius: 50%;
+}
+
+.pm-mark-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.pm-title {
+  max-width: 16ch;
+  margin: 0;
+  color: inherit;
+  font-size: clamp(24px, 2vw + 16px, 32px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+/* Body -------------------------------------------------------------------- */
+
+.pm-body {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+}
+
+.pm-call {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  min-height: 64px;
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: var(--s-cta-bg);
+  color: var(--s-cta-text);
+  text-decoration: none;
+  box-shadow: 0 16px 32px -16px color-mix(in srgb, var(--s-bg) 80%, transparent),
+    inset 0 0 0 2px color-mix(in srgb, var(--s-bg) 24%, transparent);
+}
+
+.pm-call:hover,
+.pm-call:active {
+  color: var(--s-cta-text);
+  filter: brightness(1.06);
+}
+
+.pm-call:focus-visible {
+  outline: 3px solid var(--band);
+  outline-offset: 3px;
+}
+
+.pm-call-icon {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+}
+
+.pm-call-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  line-height: 1.1;
+}
+
+.pm-call-label {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pm-call-num {
+  font-size: clamp(24px, 1.5vw + 18px, 28px);
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pm-hours {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pm-hours-row {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 16px;
+  min-height: 48px;
+  padding: 8px 16px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+  color: var(--band);
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.pm-hours-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--accent-deep);
+}
+
+.pm-hours-days {
+  font-weight: 700;
+}
+
+.pm-hours-time {
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.pm-hours-row--zone {
+  min-height: 0;
+  padding-block: 0;
+  background: none;
+  color: #4a5568;
+  font-size: 14px;
+}
+
+.pm-hours-row--zone .pm-hours-days {
+  font-weight: 500;
+}
+
+@media screen and (max-width: 399px) {
+  .pm {
+    padding: 8px;
+  }
+
+  .pm-panel {
+    max-height: calc(100dvh - 16px);
+  }
+
+  .pm-body {
+    padding: 16px;
+  }
+
+  .pm-hours-row {
+    grid-template-columns: 20px minmax(0, 1fr);
+  }
+
+  .pm-hours-time {
+    grid-column: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pm-close {
+    transition: none;
+  }
+}

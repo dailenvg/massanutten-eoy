@@ -1,0 +1,21 @@
+/*
+ * Roboto weights the generated fonts.css does not ship (500/600/800/900).
+ * One latin-subset variable file serves both ranges; 400 and 700 are left out
+ * of the ranges so the static faces in fonts.css stay authoritative for them.
+ * Without these faces Chrome and Safari synthesize the missing weights differently.
+ */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 401 699;
+  font-display: swap;
+  src: url('/fonts/roboto-variable-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 701 900;
+  font-display: swap;
+  src: url('/fonts/roboto-variable-latin.woff2') format('woff2');
+}

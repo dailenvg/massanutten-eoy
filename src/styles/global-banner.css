@@ -1,0 +1,38 @@
+/*
+ * Project overrides for the shared holiday bar (public/js/globalBanners.js).
+ * The lib's own styles stay untouched; these bring it onto the 8pt grid and
+ * WCAG AA. Contrast: #fff25d on #1a5bcc 5.3:1 (lib's #206fee was 4.0:1);
+ * white/#fff25d on #c90d0d 5.9/5.1:1; on black >= 16:1.
+ */
+.holiday-bar.cs,
+.holiday-bar.cse {
+  background-color: #1a5bcc;
+}
+
+.holiday-bar__icon {
+  margin-right: 16px;
+  margin-bottom: -8px;
+}
+
+.holiday-bar__text {
+  padding: 8px 0;
+}
+
+@media (max-width: 767px) {
+  .holiday-bar {
+    padding: 0 16px;
+  }
+
+  .holiday-bar__icon {
+    margin-bottom: 0;
+  }
+
+  .holiday-bar__text {
+    padding: 16px 0;
+  }
+}
+
+/* One top bar at a time: a live holiday banner replaces the seasonal bar. */
+html[data-holiday-bar] .stb {
+  display: none;
+}

@@ -1,0 +1,493 @@
+/* -------------------------------------------------------------------------- */
+/* Component K — bonus split CTA (BonusCta)                                    */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Two panels, each on its own photo with a light glass card, joined by a "+"
+ * on the seam; full-width CTA bar under both. Stacked below 900px (at 768
+ * the cards were too narrow and the "+" hugged the copy). At 600px and up the
+ * card copy sits left and the offer art breaks out over the card's right edge.
+ *
+ * Contrast: --band text on the 72% white glass >= 9:1 over any photo (the
+ * glass is near-opaque); the bar is --band-deep with --band-ink.
+ */
+
+#bonus-cta {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  width: 100%;
+  overflow: hidden;
+  background: var(--band-deep);
+  font-family: Roboto, Arial, sans-serif;
+  scroll-margin-top: 56px;
+}
+
+/* Section heading ---------------------------------------------------------- */
+
+.bch-header {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 48px 16px 40px;
+  color: var(--band-ink);
+  text-align: center;
+}
+
+.bch-title {
+  margin: 0;
+  font-size: clamp(28px, 2vw + 20px, 40px);
+  font-weight: 900;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.bch-subtitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+/* Panels ------------------------------------------------------------------ */
+
+.bch-panel {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  padding: 80px 16px;
+  overflow: hidden;
+}
+
+/* Oversized so the +/-8% parallax drift never exposes an edge. */
+.bch-bg {
+  position: absolute;
+  top: -8%;
+  left: 0;
+  z-index: -2;
+  width: 100%;
+  height: 116%;
+  object-fit: cover;
+  will-change: transform;
+}
+
+.bch-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(180deg, rgba(7, 19, 48, 0.16) 0%, rgba(7, 19, 48, 0.48) 100%);
+}
+
+/* Glass card ---------------------------------------------------------------- */
+
+.bch-glass {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+  min-width: 0;
+  padding: 40px 24px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.72);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 56px rgba(7, 19, 48, 0.35);
+  text-align: center;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .bch-glass {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+.bch-headline {
+  margin: 0;
+  color: var(--band);
+  font-size: clamp(24px, 1.6vw + 16px, 32px);
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  overflow-wrap: normal;
+  hyphens: manual;
+}
+
+/* Offer art ----------------------------------------------------------------- */
+
+.bch-art {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.bch-card-img {
+  display: block;
+  width: 280px;
+  max-width: 100%;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  filter: drop-shadow(0 16px 24px rgba(7, 19, 48, 0.35));
+}
+
+/* Pass art: a ribboned ski pass with a big "+1 Pass", a key line and a slow
+   shine (motion, skipped for reduced motion). */
+.bch-gift-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  aspect-ratio: 8 / 5;
+  /* Everything inside scales with the card's own width (cqw), so it holds together from 280px to 400px. */
+  container-type: inline-size;
+  padding: 6% 8%; /* % of the art box = the card width; cqw here would read an ancestor container */
+  overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--accent) 55%, transparent) 0%, transparent 60%),
+    linear-gradient(135deg, var(--band) 0%, var(--band-deep) 100%);
+  color: #ffffff;
+  text-align: left;
+}
+
+.gc-ribbon {
+  position: absolute;
+  background: linear-gradient(90deg, var(--gc-ribbon-1, #ffd766), var(--gc-ribbon-2, #ffc72c) 50%, var(--gc-ribbon-3, #e9a800));
+}
+.gc-ribbon--v { top: 0; bottom: 0; right: 22%; width: 5cqw; }
+.gc-ribbon--h { left: 0; right: 0; top: 30%; height: 5cqw; background: linear-gradient(180deg, var(--gc-ribbon-1, #ffd766), var(--gc-ribbon-2, #ffc72c) 50%, var(--gc-ribbon-3, #e9a800)); }
+
+.gc-bow {
+  position: absolute;
+  top: calc(30% + 2.5cqw - 8cqw);
+  right: calc(22% + 2.5cqw - 8cqw);
+  display: grid;
+  place-items: center;
+  width: 16cqw;
+  height: 16cqw;
+  border-radius: 50%;
+  background: var(--gc-bow-bg, #ffc72c);
+  color: var(--gc-bow-fg, #0b2a4a);
+  box-shadow: 0 4px 12px rgba(7, 19, 48, 0.4);
+}
+.gc-bow svg { width: 8cqw; height: 8cqw; }
+
+.gc-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 3cqw;
+}
+.gc-label {
+  font-size: 4.6cqw;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.gc-chip {
+  width: 10cqw;
+  height: 7.5cqw;
+  border-radius: 1.5cqw;
+  background: linear-gradient(135deg, var(--gc-chip-1, #ffe08a), var(--gc-chip-2, #d9a514));
+  box-shadow: inset 0 0 0 1px rgba(11, 42, 74, 0.25);
+}
+
+.gc-amount {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  margin-top: 8cqw;
+  font-size: 22cqw;
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  text-shadow: 0 4px 16px rgba(7, 19, 48, 0.45);
+}
+.gc-cur { margin-right: 0.04em; font-size: 0.42em; margin-top: 0.14em; color: var(--gc-accent, #ffc72c); }
+
+.gc-unit {
+  align-self: flex-end;
+  margin-left: 0.12em;
+  margin-bottom: 0.08em;
+  font-size: 0.32em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Second pass: the first pass's seasonal twin. Deep accent field with soft,
+   accent and band-accent ribbons, so the pair match in shape but not in color.
+   Everything keys off the season tokens; white text holds >= 4.5:1 on
+   --accent-strong and --accent-deep in every season. */
+.bch-night-card {
+  --gc-ribbon-1: var(--accent-soft);
+  --gc-ribbon-2: color-mix(in srgb, var(--accent) 50%, var(--accent-soft));
+  --gc-ribbon-3: var(--band-accent);
+  --gc-bow-bg: var(--accent-soft);
+  --gc-bow-fg: var(--accent-strong);
+  --gc-chip-1: var(--accent-soft);
+  --gc-chip-2: color-mix(in srgb, var(--accent) 50%, var(--accent-soft));
+  --gc-accent: var(--accent-soft);
+  background:
+    radial-gradient(120% 90% at 100% 0%, color-mix(in srgb, var(--accent) 45%, transparent) 0%, transparent 60%),
+    radial-gradient(60% 60% at 0% 100%, color-mix(in srgb, var(--accent-soft) 16%, transparent) 0%, transparent 70%),
+    linear-gradient(135deg, var(--accent-strong) 0%, var(--accent-deep) 100%);
+}
+
+.gc-or {
+  position: relative;
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 2cqw;
+  padding: 1.5cqw 4cqw;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+  white-space: nowrap;
+  font-size: 4.6cqw;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.gc-or svg { width: 5cqw; height: 5cqw; color: var(--gc-accent, #ffc72c); }
+
+.gc-shine {
+  position: absolute;
+  top: -20%;
+  bottom: -20%;
+  left: 0;
+  width: 32%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: skewX(-16deg);
+  pointer-events: none;
+}
+
+/* Divider ------------------------------------------------------------------- */
+
+/* Stacked: a zero-height row on the seam, so the "+" straddles both photos. */
+.bch-divider {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 0;
+  pointer-events: none;
+}
+
+.bch-vline {
+  display: none;
+}
+
+.bch-plus {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+/* CTA bar ------------------------------------------------------------------- */
+
+.bch-cta-bar {
+  display: flex;
+  justify-content: center;
+  padding: 32px 16px;
+  background: var(--band-deep);
+}
+
+.bch-cta-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 16px;
+  width: 100%;
+  max-width: 520px;
+}
+
+.bch-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 12px 32px;
+  border-radius: 999px;
+  background-color: var(--cta-bg);
+  color: var(--cta-ink);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: background-color 0.18s ease;
+}
+
+/* The bar is dark in every season: a band-ink ring keeps a 3:1 button edge
+   where the CTA colour sits close to the band (tt, holiday). */
+html[data-site-season] .bch-cta {
+  box-shadow: inset 0 0 0 2px var(--band-ink);
+}
+
+.bch-cta:hover,
+.bch-cta:active {
+  background-color: var(--cta-hover);
+  color: var(--cta-hover-ink);
+}
+
+.bch-cta:focus-visible {
+  outline: 3px solid var(--band-ink);
+  outline-offset: 3px;
+}
+
+/* 600px+: copy left, art breaking out over the card's right edge. */
+@media screen and (min-width: 600px) {
+  .bch-glass {
+    align-items: flex-start;
+    justify-content: center;
+    gap: 8px;
+    min-height: 240px;
+    padding: 40px;
+    text-align: left;
+  }
+
+  .bch-glass > :not(.bch-art) {
+    max-width: 48%;
+  }
+  .bch-art {
+    z-index: 1;
+  }
+
+  .bch-art {
+    position: absolute;
+    top: 0;
+    right: -6%;
+    bottom: 0;
+    width: 56%;
+    pointer-events: none;
+  }
+
+  .bch-card-img {
+    width: 100%;
+    transform: rotate(-6deg);
+  }
+}
+
+/* 900px+: two columns, divider runs down the seam. */
+@media screen and (min-width: 900px) {
+  #bonus-cta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Both cards share one fixed height so the pair reads as a set. */
+  .bch-glass {
+    height: 256px;
+  }
+  .bch-panel {
+    grid-row: 2;
+    min-height: clamp(480px, 40vw, 720px);
+    padding: 96px 64px 96px 48px;
+  }
+
+  .bch-left {
+    grid-column: 1;
+  }
+
+  .bch-right {
+    grid-column: 2;
+  }
+
+  .bch-divider {
+    grid-row: 2;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    justify-self: center;
+    height: auto;
+  }
+
+  .bch-vline {
+    display: block;
+    flex: 1;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.32);
+  }
+
+  .bch-cta-bar {
+    grid-column: 1 / -1;
+    padding: 32px 40px;
+  }
+
+  .bch-cta-actions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    max-width: 760px;
+  }
+
+  .bch-cta {
+    padding-inline: 64px;
+  }
+}
+
+/* Narrow two-column widths: keep the art clear of the centre "+" and give
+   the headline room for its longest word. */
+@media screen and (min-width: 900px) and (max-width: 1199px) {
+  .bch-glass {
+    padding: 32px;
+  }
+  .bch-glass > :not(.bch-art) {
+    max-width: 58%;
+  }
+  .bch-headline {
+    font-size: 22px;
+  }
+  .bch-art {
+    right: -8%;
+    width: 46%;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .bch-panel {
+    padding: 96px 80px 96px 64px;
+  }
+
+  .bch-glass {
+    max-width: 560px;
+    padding: 48px;
+  }
+
+  /* Wider copy column so the headline clears the art. */
+  .bch-glass > :not(.bch-art) {
+    max-width: 52%;
+  }
+  .bch-art {
+    right: -12%;
+    width: 54%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bch-cta {
+    transition: none;
+  }
+}

@@ -1,0 +1,63 @@
+.legal-main { max-width: 860px; margin: 0 auto; padding: 32px 20px 56px; }
+    .legal-main h1 { font-size: 32px; font-weight: 800; color: var(--ink); margin: 0 0 6px; line-height: 1.2; }
+    .legal-updated { color: var(--muted); font-size: 14px; margin: 0 0 28px; }
+    .legal-main h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin: 28px 0 10px; line-height: 1.3; }
+    .legal-main p, .legal-main li { font-size: 15px; line-height: 1.65; color: var(--text); }
+    .legal-main ul { padding-left: 22px; margin: 0 0 12px; }
+    .legal-main a { color: var(--navy); }
+    .legal-main p, .legal-main li, .legal-main a { overflow-wrap: anywhere; word-break: break-word; }
+    html.is-embed .pf-navbar, html.is-embed .pf-footer,
+    body.is-embed .pf-navbar, body.is-embed .pf-footer { display: none !important; }
+    html.is-embed, html.is-embed body,
+    body.is-embed {
+      background: #fff !important;
+      margin: 0 !important;
+      /* Solo padding derecho: aire entre el texto y el scrollbar del modal. */
+      padding: 0 12px 0 0 !important;
+      scrollbar-gutter: stable;
+    }
+    html.is-embed .legal-main,
+    body.is-embed .legal-main {
+      padding: 0 !important;
+      max-width: none !important;
+      margin: 0 !important;
+      box-sizing: border-box !important;
+    }
+    html.is-embed .legal-main h1,
+    body.is-embed .legal-main h1 {
+      padding-right: 48px !important;
+    }
+    html.is-embed .legal-main a:not([href]),
+    body.is-embed .legal-main a:not([href]) {
+      color: inherit;
+      text-decoration: none;
+      cursor: text;
+      pointer-events: none;
+    }
+
+    @media screen and (max-width: 991px) {
+      .legal-main { padding: 28px 24px 48px; }
+      .legal-main h1 { font-size: 28px; }
+      .legal-main h2 { font-size: 18px; margin-top: 24px; }
+      .pf-footer { padding-left: 24px; padding-right: 24px; }
+    }
+
+    @media screen and (max-width: 767px) {
+      .legal-main { padding: 20px 16px 40px; }
+      .legal-main h1 { font-size: 24px; }
+      .legal-main h2 { font-size: 17px; margin: 22px 0 8px; }
+      .legal-main p, .legal-main li { font-size: 14px; line-height: 1.6; }
+      .legal-main ul { padding-left: 18px; }
+      html.is-embed, html.is-embed body, body.is-embed {
+        padding: 0 6px 0 0 !important;
+      }
+      html.is-embed .legal-main,
+      body.is-embed .legal-main {
+        padding: 0 !important;
+      }
+      html.is-embed .legal-main h1,
+      body.is-embed .legal-main h1 {
+        font-size: 22px !important;
+        padding-right: 48px !important;
+      }
+    }

@@ -1,0 +1,213 @@
+/* -------------------------------------------------------------------------- */
+/* Hero offer card price (OfferCard > OfferPrice)                              */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * One dominant numeral. Hierarchy, top to bottom: sale-name chip + struck
+ * retail value (small, one line), then "$99" at display size with the
+ * per-package label set beside it. Accents read from the site-wide season
+ * tokens, so the chip and numeral swap with every cutover.
+ *
+ * Contrast: --accent-deep on --accent-soft >= 4.5:1 (season-accents.css);
+ * #4a5568 on white 7.5:1; --band on white >= 12:1.
+ */
+
+.op-price {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: calc(100% - 40px);
+  margin-inline: 20px;
+  padding: 16px;
+  border-radius: 24px;
+  background:
+    radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--accent) 14%, transparent) 0%, transparent 70%),
+    #ffffff;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent-strong) 18%, transparent);
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.op-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.op-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 32px;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.op-chip-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.op-was {
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.op-was-amt {
+  text-decoration-line: line-through;
+  text-decoration-color: var(--accent-strong);
+  text-decoration-thickness: 2px;
+}
+
+.op-main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+/*
+ * Percent-off ribbon tab: flush against the price box's left edge (the row
+ * cancels the box's 16px padding), flat left side, pill right side. The
+ * numeral + label stay centred in the space to its right via flexible spacer
+ * columns on either side of them.
+ */
+.op-main:has(.op-off) {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+  align-self: stretch;
+  margin-left: -16px;
+}
+
+.op-main:has(.op-off) .op-numeral {
+  grid-column: 3;
+}
+
+.op-main:has(.op-off) .op-unit {
+  grid-column: 4;
+}
+
+.op-off {
+  display: inline-flex;
+  flex-direction: column;
+  padding: 8px 16px;
+  border-radius: 0 999px 999px 0;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  text-transform: uppercase;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--accent-strong) 30%, transparent);
+}
+
+@media (max-width: 479px) {
+  .op-main:has(.op-off) {
+    column-gap: 8px;
+  }
+
+  .op-off {
+    padding: 8px 12px;
+    font-size: 16px;
+    white-space: nowrap;
+  }
+
+  /* Reclaims 8px so tab + numeral + label stay on one row at the 375px floor. */
+  .op-main:has(.op-off) .op-unit {
+    padding-left: 8px;
+  }
+}
+
+.op-numeral {
+  /* Flex so the visually-hidden price doesn't open an empty line box above the digits. */
+  display: inline-flex;
+  align-items: center;
+  color: var(--band);
+  font-size: clamp(64px, 6vw + 24px, 88px);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+}
+
+.op-numeral .pb-dollar {
+  font-size: 0.42em;
+  margin-top: 0.12em;
+  margin-right: 0.04em;
+  color: var(--accent-strong);
+}
+
+/* Per-package label: stacked beside the numeral, divided by an accent rule. */
+.op-unit {
+  max-width: 6ch;
+  padding-left: 16px;
+  border-left: 3px solid var(--accent-strong);
+  color: var(--band);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+/*
+ * PriceDrop's y-drop runs on the hydration commit, before useReducedMotion
+ * flips, so pin transforms here; only the opacity fade remains.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .pb-price-new,
+  .pb-price-old,
+  .pb-footer-text {
+    transform: none !important;
+  }
+}
+
+/* Shared by the hero circle and the card: "$" rides at the cap line. */
+.pb-numeral {
+  display: inline-flex;
+  align-items: flex-start;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Price circles (hero + Included panels): bigger price, gold ONLY flag; hero sits lower on desktop. */
+/* -------------------------------------------------------------------------- */
+
+/* Larger numeral fills the circle so the gap above "$540 VALUE" closes. */
+.pb-container .pb-price-new { font-size: 7em; line-height: 0.76; }
+.pb-container .pb-footer-text { margin-top: 0; }
+.pb-container .pb-price-old { margin-bottom: -0.1em; }
+
+/* Gold flag with navy ink (~10:1) so it reads apart from the accent ring in every season. */
+.pb-container .pb-ribbon-body {
+  background: #ffc72c;
+  color: #0b2a4a;
+  border-radius: 0.4em;
+  box-shadow: 0 0.4em 1.2em rgba(11, 42, 74, 0.35);
+  transform: rotate(-6deg);
+}
+
+@media (min-width: 992px) {
+  .ob-combo .pb-container { margin-top: 40px; }
+}
+
+/* Resort Details reuses the hero price block; it fills its centred column there. */
+.hs-price-group .op-price {
+  width: 100%;
+  max-width: 480px;
+  margin-inline: 0;
+}
+
+.hs-price-group .op-unit { text-align: left; }

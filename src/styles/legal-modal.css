@@ -1,0 +1,88 @@
+/* Legal documents rendered inline in the home page modal (replaces the former ?embed=1 iframe).
+   Typography mirrors the legal routes' embed presentation: brand.css tokens + legal-inline.css sizes. */
+
+.vv-legal-modal__body {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  background: #fff;
+  padding: 0 12px 0 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.vv-legal-modal__body .legal-main {
+  display: block;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  color: #1c2733;
+  -webkit-font-smoothing: antialiased;
+}
+.vv-legal-modal__body .legal-main * { box-sizing: border-box; }
+
+.vv-legal-modal__body .legal-main h1 {
+  font-family: inherit;
+  font-size: 32px;
+  font-weight: 800;
+  color: #071330;
+  margin: 0 0 6px;
+  padding-right: 48px;
+  line-height: 1.2;
+}
+.vv-legal-modal__body .legal-main h2 {
+  font-family: inherit;
+  font-size: 20px;
+  font-weight: 800;
+  color: #215272;
+  margin: 28px 0 10px;
+  line-height: 1.3;
+}
+.vv-legal-modal__body .legal-main p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #1c2733;
+  margin: 1em 0;
+}
+.vv-legal-modal__body .legal-main ul {
+  padding-left: 22px;
+  margin: 0 0 12px;
+}
+.vv-legal-modal__body .legal-main li {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #1c2733;
+}
+.vv-legal-modal__body .legal-main strong { font-weight: bold; }
+.vv-legal-modal__body .legal-main p,
+.vv-legal-modal__body .legal-main li,
+.vv-legal-modal__body .legal-main a {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+/* Links are inert inside the dialog (same as the former embed mode). */
+.vv-legal-modal__body .legal-main a {
+  color: inherit;
+  text-decoration: none;
+  cursor: text;
+  pointer-events: none;
+}
+
+@media screen and (max-width: 991px) {
+  .vv-legal-modal__body .legal-main h1 { font-size: 26px; }
+  .vv-legal-modal__body .legal-main h2 { font-size: 17px; }
+  .vv-legal-modal__body .legal-main p,
+  .vv-legal-modal__body .legal-main li { font-size: 14px; }
+}
+@media screen and (max-width: 767px) {
+  .vv-legal-modal__body .legal-main h1 { font-size: 22px; padding-right: 48px; }
+  .vv-legal-modal__body .legal-main h2 { font-size: 16px; margin: 20px 0 8px; }
+  .vv-legal-modal__body .legal-main p,
+  .vv-legal-modal__body .legal-main li { font-size: 14px; line-height: 1.55; }
+  .vv-legal-modal__body .legal-main ul { padding-left: 18px; }
+}

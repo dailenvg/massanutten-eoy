@@ -1,0 +1,221 @@
+/**
+ * Site-wide seasonal accent layer.
+ *
+ * The page backgrounds, navy body text, logo and legal copy stay brand; only
+ * accents swap. Tokens live on <html> so every surface (home, checkout,
+ * confirmation, portalled modals, the footer bleed) reads one source. Each page
+ * renders <SeasonMarker>, which sets `data-site-season` on <html> (plain
+ * attribute selectors, no `:has()`, so embedded webviews work too). The bare :root block is a fallback for a
+ * (site) page that forgets its marker; legal pages do not import this file and
+ * keep brand.css. Winter and late share an icy sky/navy palette.
+ *
+ * Roles:
+ *   --accent            raw accent; decorative fills and rings, never text on white
+ *   --accent-ink        text/icons placed on --accent
+ *   --accent-strong     accent as text, icons, rules and focus rings on white
+ *   --accent-deep       darker step of --accent-strong (pressed states, small text)
+ *   --accent-soft       tint behind --accent-strong text (active tabs, icon wells)
+ *   --accent-soft-hover lighter tint for hovered cards
+ *   --band / --band-ink dark seasonal band and its text
+ *   --band-alt          second dark band (offer band, value bar, hero bonus banner)
+ *   --band-accent       accent that reads on --band / --band-alt (>= 3:1)
+ *   --cta-bg / --cta-ink / --cta-hover / --cta-hover-ink  every Reserve/primary button
+ *   --accent-check / --accent-bar / --band-deep  list ticks, the "What You Get"
+ *                       bar and the bonus CTA bar; the bare :root keeps the V2
+ *                       shades, every season (winter included) folds them into
+ *                       the tokens above
+ *
+ * Contrast (WCAG 2.2), true for the bare :root and every season:
+ * --accent-strong and --accent-deep >= 4.5:1 on white and on --accent-soft;
+ * --cta-ink >= 4.5:1 on --cta-bg and --cta-hover-ink on --cta-hover (the brand
+ * orange carries navy ink, 4.62:1 / 5.64:1); --band-ink >= 4.5:1 on --band and
+ * --band-alt; --band-accent >= 3:1 on --band (icons, rules, large text only).
+ * --accent-ink >= 4.5:1 on --accent everywhere (bare :root: navy on orange
+ * 4.62:1).
+ */
+:root {
+  --accent: #fe5925;
+  --accent-ink: #0b2a4a;
+  --accent-strong: #c2421b;
+  --accent-deep: #b23c17;
+  --accent-soft: #fdeef3;
+  --accent-soft-hover: #fff7fa;
+  --band: #0d1f48;
+  --band-ink: #ffffff;
+  --band-alt: #0b2a4a;
+  --band-accent: #fe5925;
+  --cta-bg: #fe5925;
+  --cta-ink: #0b2a4a;
+  --cta-hover: #ff7a4d;
+  --cta-hover-ink: #0b2a4a;
+  --accent-check: #e9654a;
+  --accent-bar: #2189ce;
+  --band-deep: #071330;
+}
+
+html[data-site-season] {
+  --accent-check: var(--accent-strong);
+  --accent-bar: var(--accent-strong);
+  --band-deep: var(--band);
+}
+
+/* Winter Getaway (pre-holiday and Jan 4+): icy palette. Ratios: ice CTA
+   #38bdf8 with navy ink 6.9:1, glacier #0369a1 on white 5.9:1 and on frost
+   4.9:1, sky #7dd3fc on navy band 8.7:1. */
+html[data-site-season="winter"],
+html[data-site-season="late"] {
+  --accent: #38bdf8;
+  --accent-ink: #0b2a4a;
+  --accent-strong: #0369a1;
+  --accent-deep: #075985;
+  --accent-soft: #e0f2fe;
+  --accent-soft-hover: #f0f9ff;
+  --band: #0b2a4a;
+  --band-ink: #ffffff;
+  --band-alt: #0b2a4a;
+  --band-accent: #7dd3fc;
+  --cta-bg: #38bdf8;
+  --cta-ink: #0b2a4a;
+  --cta-hover: #7dd3fc;
+  --cta-hover-ink: #0b2a4a;
+}
+
+html[data-site-season="bf"] {
+  --accent: #f5b300;
+  --accent-ink: #0b0b0f;
+  --accent-strong: #8a6400;
+  --accent-deep: #7a5900;
+  --accent-soft: #fff6db;
+  --accent-soft-hover: #fffaeb;
+  --band: #0b0b0f;
+  --band-ink: #ffffff;
+  --band-alt: #0b0b0f;
+  --band-accent: #f5b300;
+  --cta-bg: #f5b300;
+  --cta-ink: #0b0b0f;
+  --cta-hover: #dda200;
+  --cta-hover-ink: #0b0b0f;
+}
+
+html[data-site-season="cm"] {
+  --accent: #22d3ee;
+  --accent-ink: #070b2b;
+  --accent-strong: #6d28d9;
+  --accent-deep: #5b21b6;
+  --accent-soft: #f3edff;
+  --accent-soft-hover: #f9f6ff;
+  --band: #1a0b3d;
+  --band-ink: #ffffff;
+  --band-alt: #1a0b3d;
+  --band-accent: #22d3ee;
+  --cta-bg: #22d3ee;
+  --cta-ink: #070b2b;
+  --cta-hover: #06b6d4;
+  --cta-hover-ink: #070b2b;
+}
+
+/* Blue leads on a dark blue band (white 11.25:1, cream 9.11:1); the brand
+   orange stays on the CTA, carrying the deepest navy (5.83:1; the lighter
+   #0b2a4a passed at 4.62:1 but read poorly on the vivid orange). */
+html[data-site-season="tt"] {
+  --accent: #1d5a9a;
+  --accent-ink: #ffffff;
+  --accent-strong: #1d5a9a;
+  --accent-deep: #0c3b6e;
+  --accent-soft: #fdf8ee;
+  --accent-soft-hover: #fefbf5;
+  --band: #0c3b6e;
+  --band-ink: #ffffff;
+  --band-alt: #0c3b6e;
+  --band-accent: #f4e6c8;
+  --cta-bg: #fe5925;
+  --cta-ink: #071330;
+  --cta-hover: #ff7a4d;
+  --cta-hover-ink: #071330;
+}
+
+/* Red accents, gold kept to decorative fills, evergreen CTA. */
+html[data-site-season="hs"] {
+  --accent: #b3122e;
+  --accent-ink: #fff8e7;
+  --accent-strong: #b3122e;
+  --accent-deep: #8e0e24;
+  --accent-soft: #fbeaec;
+  --accent-soft-hover: #fdf4f5;
+  --band: #b3122e;
+  --band-ink: #fff8e7;
+  --band-alt: #b3122e;
+  --band-accent: #d4af37;
+  --cta-bg: #0f5132;
+  --cta-ink: #ffffff;
+  --cta-hover: #0a3d26;
+  --cta-hover-ink: #ffffff;
+}
+
+html[data-site-season="ny"] {
+  --accent: #e8c872;
+  --accent-ink: #1b1446;
+  --accent-strong: #8a6a12;
+  --accent-deep: #7a5c0a;
+  --accent-soft: #fbf5e4;
+  --accent-soft-hover: #fdfaf1;
+  --band: #1b1446;
+  --band-ink: #ffffff;
+  --band-alt: #1b1446;
+  --band-accent: #e8c872;
+  --cta-bg: #e8c872;
+  --cta-ink: #1b1446;
+  --cta-hover: #d9b55a;
+  --cta-hover-ink: #1b1446;
+}
+
+/*
+ * Band context (non-winter). The global focus ring is navy, which vanishes on
+ * the dark bands of bf, cm and ny. Inside a band the ring takes --band-ink
+ * instead (>= 6.5:1 on every seasonal --band).
+ */
+html[data-site-season] :is(.footer-2, .tb-bot, .ob) :is(a, button, [role="button"]):focus-visible,
+html[data-site-season] a.vector-cta:focus-visible {
+  outline: 3px solid var(--band-ink);
+  outline-offset: 2px;
+}
+
+/*
+ * Hero price circle ring. Its default --accent fill disappears into the
+ * #205272 disc where the accent is dark (tt blue 1.19:1); tt and holiday use
+ * their band accent instead (cream 6.77:1, gold 3.98:1).
+ */
+html:is([data-site-season="tt"], [data-site-season="hs"]) .pb-circle {
+  border-color: var(--band-accent);
+}
+
+/* Calendar stay range: the fixed pink tint read off-theme next to seasonal accents. */
+html[data-site-season] .cal-day.is-range .cal-day-n {
+  background: var(--accent-soft);
+}
+
+/* tt: the cream range tint is near-invisible; an inset blue ring marks range days without color alone. */
+html[data-site-season="tt"] .cal-day.is-range:not(.is-in, .is-out) .cal-day-n {
+  box-shadow: inset 0 0 0 1px #0c3b6e;
+}
+
+/*
+ * Offer-band address: 85% white loses too much on the lighter seasonal bands
+ * (tt blue, holiday red). Seasonal bands use the solid band ink (>= 6.5:1).
+ */
+html[data-site-season] .ob-resort-addr {
+  color: var(--band-ink);
+}
+
+/*
+ * The Webflow export hovers .checkout-cta to a fixed pink (#bd3c6c) at >= 1280px,
+ * which out-specifies nothing else and reads 2.79:1 under navy ink. Every
+ * checkout CTA hovers to the season's own hover pair instead.
+ */
+@media screen and (min-width: 1280px) {
+  .checkout-cta:hover,
+  .checkout-cta.toppercta:hover {
+    background-color: var(--cta-hover);
+    color: var(--cta-hover-ink);
+  }
+}

@@ -1,0 +1,4421 @@
+/**
+ * Seasonal design system (copy spec §2) plus Component A (top bar, §3) and
+ * Component F (seasonal sale banner, §8).
+ *
+ * Palette tokens are set per version on [data-season] and consumed by both
+ * components, so a cutover repaints everything seasonal from one place. The
+ * site-wide accents (CTAs, icons, bands) come from season-accents.css; logo,
+ * page backgrounds and navy body copy stay brand.
+ *
+ * Spacing is on the 8pt grid throughout.
+ */
+
+/*
+ * Token roles:
+ *   --s-bg / --s-on          seasonal block + its text (top bar, banner block)
+ *   --s-accent / -alt        accents (big banner text, particles)
+ *   --s-cta-bg / --s-cta-text  seasonal pill/tag fill (banner pill-right)
+ *   --s-chip-bg / --s-chip-on  small text chips (countdown); always >= 4.5:1
+ *   --s-badge-bg / --s-badge-on seasonal badge pair; always >= 4.5:1 (the hero
+ *                            lockup in HeroLockup.tsx sets its own colours)
+ *   --s-pill-icon            pill-row icons on the white pill; always >= 3:1 on white
+ * Mountain palette (docs/season-palette-proposal.md): Blue Ridge colours
+ * (blue-ridge dusk, ember, evergreen, river stone, birch) tuned per season.
+ * --s-accent is used as text only at large sizes (banner name >= 20px/800,
+ * big banner text >= 32px) and as icons; every accent is >= 3:1 on the
+ * banner panel worst case (88% band over a white photo) and on the chips.
+ * tt and hs override accent text in seasonal-sale-banner.css; --s-accent-alt
+ * is decorative-only outside tt.
+ */
+[data-season="winter"],
+[data-season="late"] {
+  --s-bg: #0b2a4a;
+  --s-on: #ffffff;
+  --s-accent: #7dd3fc;
+  --s-pill-icon: #0369a1;
+  --s-cta-bg: #38bdf8;
+  --s-cta-text: #0b2a4a;
+  --s-chip-bg: #38bdf8;
+  --s-chip-on: #0b2a4a;
+  --s-badge-bg: #0b2a4a;
+  --s-badge-on: #ffffff;
+  --s-rule: #38bdf8;
+}
+
+[data-season="bf"] {
+  --s-bg: #17120e;
+  --s-on: #ffffff;
+  --s-accent: #f2a93b;
+  --s-pill-icon: #8a5a12;
+  --s-cta-bg: #f2a93b;
+  --s-cta-text: #17120e;
+  --s-chip-bg: #f2a93b;
+  --s-chip-on: #17120e;
+  --s-badge-bg: #17120e;
+  --s-badge-on: #f2a93b;
+  --s-rule: #f2a93b;
+}
+
+[data-season="cm"] {
+  --s-bg: #0b1a2e;
+  --s-on: #ffffff;
+  --s-accent: #5ed3e0;
+  --s-pill-icon: #5b45b8;
+  --s-accent-alt: #8b7ad8;
+  --s-cta-bg: #5ed3e0;
+  --s-cta-text: #0b1a2e;
+  --s-chip-bg: #5ed3e0;
+  --s-chip-on: #0b1a2e;
+  --s-badge-bg: #0b1a2e;
+  --s-badge-on: #5ed3e0;
+  --s-rule: #8b7ad8;
+}
+
+/* tt accent is 3.43:1 on the band: non-text only (top bar dot, modal ring); text uses accent-alt. */
+[data-season="tt"] {
+  --s-bg: #1a5551;
+  --s-on: #ffffff;
+  --s-accent: #f08a4b;
+  --s-pill-icon: #1a5551;
+  --s-accent-alt: #efe3c8;
+  --s-cta-bg: #f08a4b;
+  --s-cta-text: #10201f;
+  --s-chip-bg: #efe3c8;
+  --s-chip-on: #1f3b3a;
+  --s-badge-bg: #1a5551;
+  --s-badge-on: #ffffff;
+  --s-rule: #efe3c8;
+}
+
+/* hs accent-alt (cranberry) never renders on the evergreen band; tt/cm-only selectors use it. */
+[data-season="hs"] {
+  --s-bg: #1e3d2f;
+  --s-on: #fff8e7;
+  --s-accent: #ecc469;
+  --s-pill-icon: #a3263a;
+  --s-accent-alt: #a3263a;
+  --s-cta-bg: #a3263a;
+  --s-cta-text: #ffffff;
+  --s-chip-bg: #d9a441;
+  --s-chip-on: #1e2a1f;
+  --s-badge-bg: #a3263a;
+  --s-badge-on: #fff8e7;
+  --s-rule: #ecc469;
+}
+
+[data-season="ny"] {
+  --s-bg: #101a2b;
+  --s-on: #ffffff;
+  --s-accent: #e6c77a;
+  --s-pill-icon: #7a5c14;
+  --s-accent-alt: #b9c2cc;
+  --s-cta-bg: #e6c77a;
+  --s-cta-text: #101a2b;
+  --s-chip-bg: #e6c77a;
+  --s-chip-on: #101a2b;
+  --s-badge-bg: #101a2b;
+  --s-badge-on: #e6c77a;
+  --s-rule: #b9c2cc;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Component A — seasonal top bar                                             */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * --stb-pat-accent: motif colour for the bar's star particles (SeasonFx).
+ */
+.stb[data-season="winter"],
+.stb[data-season="late"] {
+  --stb-pat-accent: #ffffff;
+}
+
+.stb[data-season="bf"] {
+  --stb-pat-accent: #ffffff;
+}
+
+.stb[data-season="cm"] {
+  --stb-pat-accent: #7c3aed;
+}
+
+.stb[data-season="tt"] {
+  --stb-pat-accent: #fe5925;
+}
+
+.stb[data-season="hs"] {
+  --stb-pat-accent: #fff8e7;
+}
+
+.stb[data-season="ny"] {
+  --stb-pat-accent: #ffffff;
+}
+
+.stb {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  display: flex;
+  align-items: stretch;
+  /* 48px clears the 44px touch-target minimum. */
+  min-height: 48px;
+  padding: 0 0 0 16px;
+  overflow: hidden;
+  background: var(--s-bg);
+  border-bottom: 2px solid var(--s-rule);
+  color: var(--s-on);
+  text-decoration: none;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.stb:hover .stb-copy,
+.stb:focus-visible .stb-copy {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stb:active {
+  filter: brightness(0.96);
+}
+
+.stb:focus-visible {
+  /* Transparent outline keeps a ring in forced-colors mode; the real ring is ::after. */
+  outline: 3px solid transparent;
+  outline-offset: -3px;
+}
+
+/*
+ * Focus ring drawn above the positioned children (a plain outline paints
+ * beneath them). Two tones: --s-on band reads on the bar, the thin --s-bg
+ * edge reads on the chip-coloured arrow pill.
+ */
+.stb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.stb:focus-visible::after {
+  box-shadow: inset 0 0 0 2px var(--s-bg), inset 0 0 0 5px var(--s-on);
+}
+
+@media (hover: hover) {
+  .stb:hover .stb-pill {
+    background: var(--s-on);
+    color: var(--s-bg);
+  }
+}
+
+.stb:focus-visible .stb-pill,
+.stb:active .stb-pill {
+  background: var(--s-on);
+  color: var(--s-bg);
+}
+
+.stb-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 16px;
+  min-width: 0;
+  padding: 8px 16px 8px 0;
+}
+
+.stb-mark-wrap,
+.stb-divider,
+.stb-message,
+.stb-chip-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.stb-mark-wrap {
+  flex-shrink: 0;
+  color: var(--s-chip-bg);
+}
+
+.stb-mark {
+  width: 24px;
+  height: 24px;
+}
+
+.stb-divider {
+  flex-shrink: 0;
+  align-self: stretch;
+  width: 2px;
+  min-height: 24px;
+  background: var(--s-rule);
+}
+
+.stb-message {
+  min-width: 0;
+}
+
+.stb-copy {
+  min-width: 0;
+  font-size: clamp(13px, 1.1vw, 15px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.stb-copy--mobile {
+  display: none;
+}
+
+.stb-countdown {
+  flex-shrink: 0;
+  /* Reserve width so the ticking clock cannot shift the bar. */
+  min-width: 168px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: var(--s-chip-bg);
+  color: var(--s-chip-on);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.stb-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Arrow pill inline after the message: the bar's visible "go" affordance (44px tall target). */
+.stb-pill-wrap {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.stb-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 44px;
+  border-radius: 999px;
+  background: var(--s-chip-bg);
+  color: var(--s-chip-on);
+  box-shadow: 0 0 0 2px var(--s-on), 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.stb-arrow {
+  width: 24px;
+  height: 24px;
+}
+
+@media (min-width: 768px) {
+  .stb {
+    padding-left: 24px;
+  }
+
+  .stb-inner {
+    flex-wrap: nowrap;
+    padding-right: 24px;
+  }
+}
+
+/* Mobile: short copy, countdown on its own second line, mark hidden at the floor. */
+@media (max-width: 767px) {
+  .stb-copy--desktop {
+    display: none;
+  }
+
+  .stb-copy--mobile {
+    display: block;
+  }
+
+  .stb-message {
+    flex: 0 1 auto;
+  }
+
+  .stb-chip-wrap {
+    flex: 1 1 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 479px) {
+  .stb-mark-wrap,
+  .stb-divider {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Seasonal motion layer (SeasonFx). Transform/opacity only, never clickable. */
+/* -------------------------------------------------------------------------- */
+
+.sfx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.sfx > span {
+  position: absolute;
+  display: block;
+  will-change: transform, opacity;
+}
+
+.sfx-sparkle {
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--s-accent);
+  box-shadow: 0 0 6px var(--s-accent);
+}
+
+.sfx-star {
+  top: 0;
+  width: 8px;
+  height: 8px;
+  background: var(--stb-pat-accent);
+  clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.sfx-pixel {
+  bottom: 0;
+  width: 5px;
+  height: 5px;
+  background: var(--s-accent);
+}
+
+.sfx-pixel--alt {
+  background: var(--s-accent-alt);
+}
+
+.sfx-scanline {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(34, 211, 238, 0.14);
+}
+
+.sfx-cloud {
+  width: 48px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.sfx-plane {
+  top: calc(50% - 8px);
+  left: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--s-accent-alt);
+}
+
+.sfx-plane svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+
+.sfx-trail {
+  top: 50%;
+  left: 0;
+  right: 0;
+  border-top: 2px dotted rgba(244, 230, 200, 0.6);
+  transform-origin: left center;
+}
+
+.sfx-light {
+  bottom: 2px;
+  width: 6px;
+  height: 6px;
+  margin-left: -3px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.sfx-confetti {
+  top: 0;
+  width: 6px;
+  height: 10px;
+  border-radius: 1px;
+}
+
+.sfx-firework {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  box-shadow: 0 0 8px currentColor;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sfx {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hero season layer (HeroSeasonLayer + season-fx/*).                          */
+/* Static styling only: Framer Motion drives transform/opacity; particles are   */
+/* drawn on a canvas (season-fx/ParticleCanvas).                              */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Over the hero photo, under everything else. `stage` is the first child of
+ * .hero; .herocontainer (perspective, so its own stacking context) paints
+ * after it. `column` sits inside .flex-block-6 on phones.
+ */
+.hsl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.hsl--column {
+  display: none;
+}
+
+@media screen and (max-width: 767px) {
+  .hsl--stage {
+    display: none;
+  }
+
+  .hsl--column {
+    display: block;
+  }
+
+  /* The column layer sits inside .flex-block-6; lift its content above it. */
+  .flex-block-6 > :is(.ob-group, .video-resort, .cta-wrapper) {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.hsl span,
+.hsl svg {
+  position: absolute;
+  display: block;
+}
+
+.hsl-fill {
+  inset: 0;
+}
+
+/* Canvas particle layer (ParticleCanvas): fills the season layer. */
+.hsl .hsl-canvas {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Full-height zero-width column: translateY(100%) equals the layer height. */
+.hsl-track {
+  top: 0;
+  bottom: 0;
+  width: 0;
+}
+
+/* Winter snow -------------------------------------------------------------- */
+
+.hsl-flake {
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.hsl-flake--mid {
+  width: 6px;
+  height: 6px;
+  box-shadow: 0 0 6px rgba(255, 255, 255, 0.6);
+}
+
+.hsl-flake--near {
+  width: 10px;
+  height: 10px;
+  box-shadow: 0 0 10px 1px rgba(255, 255, 255, 0.75);
+}
+
+.hsl-flake--still {
+  opacity: 0.75;
+}
+
+.hsl-glow {
+  top: -24%;
+  width: 56%;
+  height: 64%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(196, 228, 255, 0.4), rgba(196, 228, 255, 0));
+}
+
+.hsl-glow--left {
+  left: -12%;
+}
+
+.hsl-glow--right {
+  right: -12%;
+}
+
+/* Black Friday ------------------------------------------------------------- */
+
+.hsl-vignette--bf {
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 70% at 40% 40%, rgba(8, 6, 4, 0) 40%, rgba(8, 6, 4, 0.6) 100%),
+    linear-gradient(180deg, rgba(8, 6, 4, 0.5) 0%, rgba(8, 6, 4, 0.15) 50%, rgba(8, 6, 4, 0.45) 100%);
+}
+
+.hsl-dust {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ffd978;
+  box-shadow: 0 0 6px 1px rgba(245, 179, 0, 0.85);
+}
+
+.hsl-dust--still {
+  opacity: 0.6;
+}
+
+.hsl-sweep {
+  top: -10%;
+  bottom: -10%;
+  left: 0;
+  width: 24%;
+  background: linear-gradient(90deg, rgba(255, 214, 120, 0), rgba(255, 222, 140, 0.32) 50%, rgba(255, 214, 120, 0));
+}
+
+/* Cyber Monday ------------------------------------------------------------- */
+
+.hsl-scanlines {
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(34, 211, 238, 0.07) 0 1px, rgba(34, 211, 238, 0) 1px 4px);
+}
+
+.hsl-track--band {
+  left: 0;
+  right: 0;
+  width: auto;
+}
+
+.hsl-scanband {
+  left: 0;
+  right: 0;
+  top: -96px;
+  height: 96px;
+  background: linear-gradient(180deg, rgba(34, 211, 238, 0), rgba(34, 211, 238, 0.1), rgba(34, 211, 238, 0));
+}
+
+.hsl-tint--cm {
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 11, 43, 0.55) 0%, rgba(7, 11, 43, 0.2) 45%, rgba(46, 16, 101, 0.45) 100%);
+}
+
+.hsl-grid {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 32%;
+  background: linear-gradient(180deg, rgba(124, 58, 237, 0.1), rgba(124, 58, 237, 0.4));
+}
+
+.hsl-grid svg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  -webkit-mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), #000 40%);
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.35), #000 40%);
+}
+
+.hsl-grid-rays line {
+  stroke: rgba(167, 139, 250, 0.7);
+  stroke-width: 1.5;
+}
+
+.hsl-grid-rows line {
+  stroke: rgba(34, 211, 238, 0.8);
+  stroke-width: 1.5;
+}
+
+.hsl-horizon {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #22d3ee;
+  box-shadow: 0 0 16px 3px rgba(34, 211, 238, 0.75);
+}
+
+.hsl-glitch {
+  left: 0;
+  right: 0;
+  mix-blend-mode: screen;
+}
+
+.hsl-glitch--cyan {
+  background: rgba(34, 211, 238, 0.4);
+}
+
+.hsl-glitch--violet {
+  background: rgba(167, 139, 250, 0.4);
+}
+
+/* Travel Tuesday ----------------------------------------------------------- */
+
+.hsl-trail {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hsl-trail path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.hsl-trail .hsl-trail-mask {
+  stroke: #ffffff;
+  stroke-width: 24;
+  stroke-linecap: butt;
+}
+
+.hsl-trail-glow {
+  stroke: rgba(12, 59, 110, 0.35);
+  stroke-width: 8;
+}
+
+.hsl-trail-dash {
+  stroke: #fff6e3;
+  stroke-width: 3;
+  stroke-dasharray: 8 10;
+}
+
+/* Plane, contrail and waypoints are centred on their point. */
+.hsl-jet {
+  top: 0;
+  left: 0;
+  width: 48px;
+  height: 48px;
+  margin: -24px 0 0 -24px;
+}
+
+.hsl-jet-svg {
+  position: static;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 6px 6px rgba(4, 18, 34, 0.4));
+}
+
+.hsl-spark {
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  border-radius: 50%;
+  background: #fff6e3;
+  box-shadow: 0 0 8px 2px rgba(254, 89, 37, 0.55);
+}
+
+.hsl-waypoint {
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 3px solid #f4e6c8;
+  border-radius: 50%;
+  background: #fe5925;
+  box-shadow: 0 2px 6px rgba(4, 18, 34, 0.4);
+}
+
+/* Zero-size point at the pin tip; the pin and ripples hang off it. */
+.hsl-pin-anchor {
+  width: 0;
+  height: 0;
+}
+
+.hsl-pin {
+  left: -20px;
+  top: -50px;
+  width: 40px;
+  height: 50px;
+  transform-origin: 50% 100%;
+  filter: drop-shadow(0 4px 6px rgba(4, 18, 34, 0.4));
+}
+
+.hsl-pin svg {
+  position: static;
+  width: 100%;
+  height: 100%;
+}
+
+.hsl-ripple {
+  left: -32px;
+  top: -12px;
+  width: 64px;
+  height: 24px;
+  border: 2px solid #f4e6c8;
+  border-radius: 50%;
+}
+
+.hsl-cloud {
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 35% 60%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0)),
+    radial-gradient(closest-side at 62% 45%, rgba(255, 250, 240, 0.65), rgba(255, 250, 240, 0));
+}
+
+.hsl-cloud--far {
+  width: 240px;
+  height: 72px;
+  opacity: 0.55;
+}
+
+.hsl-cloud--near {
+  width: 400px;
+  height: 128px;
+  opacity: 0.85;
+}
+
+/* Holiday ------------------------------------------------------------------ */
+
+.hsl-lights {
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+}
+
+.hsl-lights svg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.hsl-lights path {
+  fill: none;
+  stroke: #12301f;
+  stroke-width: 2;
+}
+
+.hsl-bulb {
+  width: 8px;
+  height: 12px;
+  margin-left: -4px;
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 0 10px 3px currentColor;
+}
+
+.hsl-bokeh {
+  width: 144px;
+  height: 144px;
+  margin: -72px 0 0 -72px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, currentColor 60%, transparent), transparent);
+  mix-blend-mode: screen;
+}
+
+/* New Year ----------------------------------------------------------------- */
+
+.hsl-bloom {
+  width: 160px;
+  height: 160px;
+  margin: -80px 0 0 -80px;
+}
+
+.hsl-bloom svg {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.hsl-bloom line {
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.hsl-bloom circle {
+  fill: currentColor;
+}
+
+@media screen and (max-width: 767px) {
+  .hsl-lights {
+    height: 32px;
+  }
+
+  .hsl-bokeh {
+    width: 96px;
+    height: 96px;
+    margin: -48px 0 0 -48px;
+  }
+
+  .hsl-bloom {
+    width: 88px;
+    height: 88px;
+    margin: -44px 0 0 -44px;
+  }
+
+  .hsl-cloud--far {
+    width: 136px;
+    height: 40px;
+  }
+
+  .hsl-cloud--near {
+    width: 200px;
+    height: 64px;
+  }
+
+  .hsl-jet {
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+  }
+
+  .hsl-pin {
+    left: -16px;
+    top: -40px;
+    width: 32px;
+    height: 40px;
+  }
+}
+
+/* Badge accents (BadgeFx): drawn on the badge's 703×206 grid. ---------------- */
+
+.hsl-badge {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.hsl-badge-cap {
+  fill: #f7fcff;
+  stroke: rgba(170, 205, 235, 0.9);
+  stroke-width: 1.2;
+  filter: drop-shadow(0 1px 1px rgba(0, 30, 60, 0.35));
+}
+
+.hsl-glint {
+  filter: drop-shadow(0 0 4px currentColor);
+}
+
+.hsl-stamp-ink {
+  fill: none;
+  stroke: #fe5925;
+  stroke-width: 3;
+}
+
+
+.hsl-flourish {
+  fill: none;
+  stroke: #d4af37;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+}
+
+/* -------------------------------------------------------------------------- */
+/* Component F — seasonal sale banner                                         */
+/* -------------------------------------------------------------------------- */
+
+.ssb {
+  display: block;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0;
+  text-decoration: none;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+.ssb:focus-visible {
+  /* Ring sits on the light page: the dark season bg clears 3:1 everywhere; gold/cyan accents did not. */
+  outline: 3px solid var(--s-bg);
+  outline-offset: 4px;
+}
+
+.ssb-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 8px 24px;
+  border-radius: 999px 999px 0 0;
+  background: #ffffff;
+  color: #0b2a4a;
+}
+
+.ssb-pill-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  color: var(--s-pill-icon);
+}
+
+.ssb-pill-text {
+  min-width: 0;
+  font-size: clamp(12px, 1.3vw, 16px);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.ssb-block {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 32px 24px;
+  overflow: hidden;
+  background-color: var(--s-bg);
+  /* Set --ssb-image per version once destination photography is supplied. */
+  background-image: var(--ssb-image, none);
+  background-size: cover;
+  background-position: center;
+  color: var(--s-on);
+}
+
+/* Per-version photo treatments. Every one keeps a tinted field behind the type for contrast. */
+.ssb-block::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--s-bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--s-bg) 55%, transparent) 100%
+  );
+}
+
+.ssb-block[data-treatment="dark-overlay"]::before {
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.6));
+}
+
+.ssb-block[data-treatment="blue-duotone"]::before {
+  background: linear-gradient(90deg, rgba(7, 11, 43, 0.9), rgba(34, 211, 238, 0.35));
+  mix-blend-mode: multiply;
+}
+
+.ssb-block[data-treatment="bright"]::before {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--s-bg) 85%, transparent) 0%,
+    transparent 75%
+  );
+}
+
+/* Travel Tuesday: passport-stamp graphic in the corner. Decorative. */
+.ssb-block[data-treatment="bright"]::after {
+  content: "";
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 64px;
+  height: 64px;
+  border: 3px dashed var(--s-accent-alt);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 6px transparent, inset 0 0 0 8px var(--s-accent-alt);
+  opacity: 0.85;
+  transform: rotate(-14deg);
+  pointer-events: none;
+}
+
+.ssb-big-word,
+.ssb-big-text {
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+}
+
+.ssb-big-word,
+.ssb-right {
+  position: relative;
+  min-width: 0;
+}
+
+.ssb-big-word {
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.ssb-right {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.ssb-big-text {
+  font-size: clamp(32px, 6vw, 72px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  color: var(--s-accent);
+  overflow-wrap: anywhere;
+}
+
+/* TT orange on the teal band is 3.43:1; the birch accent-alt is 6.70:1. */
+[data-season="tt"] .ssb-big-text {
+  color: var(--s-accent-alt);
+}
+
+.ssb-big-word {
+  overflow-wrap: anywhere;
+}
+
+/* 375px: keep long words (GETAWAY, BLOWOUT, TUESDAY) and the tag inside the block. */
+@media (max-width: 479px) {
+  .ssb-block {
+    padding: 24px 16px;
+  }
+
+  .ssb-tag {
+    white-space: normal;
+  }
+}
+
+.ssb-tag {
+  padding: 8px 24px;
+  border-radius: 999px;
+  background: var(--s-cta-bg);
+  color: var(--s-cta-text);
+  /* Every --s-cta-bg / --s-cta-text pair clears 4.5:1; the size is >= 19px bold regardless. */
+  font-size: clamp(19px, 1.6vw, 22px);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 767px) {
+  .ssb-block {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Offer-card additions (§4)                                                  */
+/* -------------------------------------------------------------------------- */
+
+/* Hero bonus-banner pill: overlap consecutive icons. */
+.ssb-pill-icon + .ssb-pill-icon {
+  margin-left: -4px;
+}
+
+/*
+ * Hero bonus banner (§4). Sits in the V2 .includes-banner-cta slot, so it
+ * inherits that slot's width, centring and 12px top radius; these rules only
+ * restate the brand palette and match the flattened banner's proportions.
+ */
+.ssb--brand {
+  --s-bg: var(--band-alt);
+  --s-accent: var(--band-accent);
+  --s-pill-icon: var(--accent-strong);
+  --s-cta-bg: var(--cta-bg);
+  --s-cta-text: var(--cta-ink);
+  --s-on: var(--band-ink);
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.ssb--brand .ssb-pill {
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 0;
+}
+
+.ssb--brand .ssb-pill-text {
+  font-size: clamp(11px, 1.5vw, 15px);
+}
+
+.ssb--brand .ssb-block {
+  padding: 16px 24px;
+}
+
+.ssb--brand .ssb-big-word,
+.ssb--brand .ssb-big-text {
+  font-size: clamp(24px, 4.5vw, 44px);
+}
+
+/* Mobile: the slot goes full-bleed, so drop the corner radius with it. */
+@media screen and (max-width: 767px) {
+  .ssb--brand {
+    border-radius: 0;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Additions to V2 components required by the copy spec                       */
+/* -------------------------------------------------------------------------- */
+
+/* §10 tab 3 — the add-on line under the bonus cards. */
+.rd-panel-addons {
+  margin: 16px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #4a5568;
+}
+
+/* §10 tab 4 — the second header bar sits below the first list. */
+.rd-panel-right .rd-panel-header-bar + .rd-feature-list {
+  margin-bottom: 16px;
+}
+
+.rd-panel-right .rd-feature-list + .rd-panel-header-bar {
+  margin-top: 16px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Hero lockup notes (§4)                                                     */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * The V2 hero art was a dark aerial, so the white lockup read cleanly against
+ * it. A pale hero frame, which would drop the
+ * lockup below 4.5:1. A scrim behind the text alone showed as a grey blob on
+ * wide viewports, so darken the top of the hero uniformly instead — the same
+ * tonal balance the reference art had.
+ */
+/*
+ * §8 places the seasonal banner at "full content width", so it lines up with
+ * the sections above and below rather than running edge to edge. The hero's
+ * bonus banner is excluded — it sits in the hero's own slot.
+ */
+.ssb:not(.ssb--brand) {
+  max-width: 1330px;
+  margin: 32px auto;
+  padding: 0 16px;
+}
+
+.ssb:not(.ssb--brand) .ssb-pill {
+  border-radius: 16px 16px 0 0;
+}
+
+.ssb:not(.ssb--brand) .ssb-block {
+  border-radius: 0 0 16px 16px;
+}
+
+@media screen and (max-width: 767px) {
+  .ssb:not(.ssb--brand) {
+    margin: 24px auto;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* More to Explore — two equal panels (§11)                                   */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Replaces the two bare lists either side of a hairline rule with two cards of
+ * equal width and equal height. New class names throughout (mte-*) so none of
+ * the legacy .anacolumn / .amattlist rules in the Webflow sheets reach in.
+ */
+
+#amenitiesAndAttractions.amenitiesandattractions {
+  background-color: #f4f6f8;
+}
+
+.mte-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+  width: 100%;
+}
+
+.mte-card {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  min-width: 0;
+  padding: 32px;
+  background: #ffffff;
+  border: 1px solid rgba(7, 19, 48, 0.07);
+  border-radius: 20px;
+  box-shadow: 0 1px 2px rgba(7, 19, 48, 0.04),
+    0 12px 32px -20px rgba(7, 19, 48, 0.28);
+}
+
+/* --- Card header --------------------------------------------------------- */
+
+.mte-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid rgba(7, 19, 48, 0.08);
+}
+
+.mte-card-eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-strong);
+}
+
+.mte-card-title {
+  margin: 0;
+  font-size: clamp(20px, 1.6vw, 24px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: #0b2a4a;
+}
+
+/* --- Lists --------------------------------------------------------------- */
+
+.mte-list {
+  display: grid;
+  gap: 16px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mte-list--one {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/*
+ * Two-up only where a column stays wide enough to hold a label on one or two
+ * lines; below that both lists run single-column.
+ */
+.mte-list--two {
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.mte-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.mte-item-chip {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent-strong) 10%, transparent);
+  color: var(--accent-strong);
+}
+
+.mte-item-text {
+  min-width: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  color: #1c2733;
+}
+
+/* --- Narrow viewports ---------------------------------------------------- */
+
+@media screen and (max-width: 900px) {
+  .mte-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+@media screen and (max-width: 479px) {
+  .mte-card {
+    gap: 16px;
+    padding: 24px 16px;
+    border-radius: 16px;
+  }
+
+  .mte-card-head {
+    padding-bottom: 16px;
+  }
+
+  .mte-item-text {
+    font-size: 15px;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Section CTAs: desktop only                                                 */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Below 768px the sticky bar (.msc-cta) and the nav CTA (.checkout-cta
+ * .nav-variant) are always on screen, so the per-section "Reserve now"
+ * buttons are a third copy of the same action on a viewport that can least
+ * afford the vertical space. Hide them there and let the persistent CTAs do
+ * the work.
+ *
+ * Deliberately NOT hidden: the hero CTAs, the sticky bar, the nav CTA, and
+ * the bonus panel CTAs, since the bonus block IS a call to action.
+ *
+ * seasonal.css is the last sheet in the cascade, so these beat the
+ * width:100% mobile rules in home-inline.css without !important.
+ */
+@media screen and (max-width: 767px) {
+  .property-sogno-wg-orlando-99-eoy .whatyougetcontainer > .checkout-cta,
+  .property-sogno-wg-orlando-99-eoy #everything-included .rd-cta.rd-cta-full,
+  .property-sogno-wg-orlando-99-eoy #amenitiesAndAttractions .div-block-21,
+  .property-sogno-wg-orlando-99-eoy #guest-reviews .gr-cta,
+  .property-sogno-wg-orlando-99-eoy .hs-cta {
+    display: none;
+  }
+}
+
+.cf {
+  --ck-accent: var(--accent-strong);
+  --ck-accent-dark: var(--accent-deep);
+  --ck-ink: #0b2a4a;
+  --ck-body: #1c2733;
+  --ck-muted: #667085;
+  --ck-line: #d9dee5;
+  --ck-surface: #ffffff;
+  --ck-canvas: #f4f6f8;
+
+  padding: clamp(16px, 3vw, 32px) clamp(16px, 4vw, 40px) clamp(48px, 6vw, 72px);
+  background: var(--ck-canvas);
+  color: var(--ck-body);
+  font-family: var(--font, Roboto, Arial, sans-serif);
+}
+
+.cf-inner {
+  width: 100%;
+  max-width: 1090px;
+  margin-inline: auto;
+}
+
+.cf-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.cf-hero-img {
+  display: block;
+  width: 100%;
+  height: clamp(140px, 22vw, 260px);
+  object-fit: cover;
+}
+
+.cf-hero-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px clamp(16px, 3vw, 32px);
+  background: #0e7c86;
+  color: #ffffff;
+}
+
+.cf-hero-brand {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.cf-hero-total {
+  font-size: 15px;
+}
+
+.cf-hero-total strong {
+  font-size: 18px;
+}
+
+.cf-body {
+  padding: clamp(24px, 4vw, 40px);
+  background: var(--ck-surface);
+  border: 1px solid rgba(7, 19, 48, 0.1);
+  border-top: 0;
+  border-radius: 0 0 12px 12px;
+}
+
+.cf-title {
+  margin: 0;
+  font-size: clamp(30px, 4.4vw, 46px);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  color: #0b0b0f;
+}
+
+.cf-lede {
+  margin: 8px 0 32px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* --- Action required ----------------------------------------------------- */
+
+.cf-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: clamp(16px, 3vw, 24px);
+  /* Yellow panel from the comp; the ink on it stays well past 4.5:1. */
+  background: #fdf3a8;
+  border: 1px solid #e3cf5a;
+  border-radius: 8px;
+  color: #3a2f05;
+}
+
+.cf-action-copy {
+  flex: 1 1 380px;
+  min-width: 0;
+}
+
+.cf-action-copy p {
+  margin: 0 0 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cf-action-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cf-action-hours {
+  margin-top: 12px !important;
+}
+
+.cf-action-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 24px;
+  border-radius: 999px;
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 200ms ease, transform 200ms ease;
+}
+
+.cf-action-cta:hover {
+  background: var(--cta-hover);
+  color: var(--cta-hover-ink);
+  transform: translateY(-2px);
+}
+
+.cf-action-cta:focus-visible {
+  outline: 3px solid var(--ck-ink);
+  outline-offset: 3px;
+}
+
+.cf-action-cta svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* --- Summary ------------------------------------------------------------- */
+
+.cf-section-title {
+  margin: 40px 0 16px;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 700;
+  color: var(--ck-ink);
+}
+
+/*
+ * Summary card — Figma node 675:23572. Sections sit on a 1px gap so the card's
+ * own colour reads as the hairline between them, which is what the comp draws.
+ */
+.cf-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow: hidden;
+  background: var(--ck-line);
+  border-radius: 16px;
+}
+
+.cf-summary-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  /* The comp's 32/24 insets — this is what was missing at the edges. */
+  padding: 32px 24px;
+  background: var(--ck-canvas);
+}
+
+.cf-summary-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--ck-ink);
+}
+
+.cf-summary-head svg {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+}
+
+.cf-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+}
+
+.cf-list--extras {
+  gap: 4px;
+}
+
+/*
+ * The icon sits in a hanging column: the row is indented by the icon and its
+ * gap, and the label is pulled back out. A value that wraps to its own line on
+ * a narrow screen then lands under the label rather than under the icon.
+ */
+.cf-list-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px 8px;
+  padding-left: 28px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ck-ink);
+}
+
+.cf-list-row dt {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 0 -28px;
+  font-weight: 600;
+}
+
+.cf-list-row dt::after {
+  content: ":";
+}
+
+.cf-list-row dt svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--ck-ink);
+}
+
+.cf-list-row dd {
+  margin: 0;
+  min-width: 0;
+  font-weight: 500;
+}
+
+/* Extras read the other way round: the price is the figure that matters. */
+.cf-list--extras .cf-list-row dt {
+  font-weight: 500;
+}
+
+/* The comp sets extras as "label  price", with no colon between them. */
+.cf-list--extras .cf-list-row:not(.cf-list-row--total) dt::after {
+  content: none;
+}
+
+.cf-list--extras .cf-list-row dd {
+  font-weight: 700;
+}
+
+/* Not in the comp, which has no receipt; the total closes our list. */
+/* The total carries no icon, so it keeps neither the indent nor the hang. */
+.cf-list-row--total {
+  margin-top: 12px;
+  padding-top: 12px;
+  padding-left: 0;
+  border-top: 1px solid var(--ck-line);
+  font-size: 16px;
+}
+
+.cf-list-row--total dt {
+  margin-left: 0;
+}
+
+.cf-list--extras .cf-list-row--total dt,
+.cf-list--extras .cf-list-row--total dd {
+  font-weight: 700;
+}
+
+.cf-list-empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ck-muted);
+}
+
+.cf-travel-line {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ck-ink);
+}
+
+@media screen and (max-width: 560px) {
+  .cf-summary-section {
+    padding: 24px 16px;
+  }
+}
+
+.cf-help {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ck-line);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.cf-help p {
+  margin: 0;
+}
+
+.cf-help a {
+  color: var(--ck-accent);
+  font-weight: 700;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Checkout flow — six steps, one system                                      */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Figma files: Payment-Flow_Updates (steps 1–2), Payment-Flow-Mockup (modal,
+ * extend, extra vacation, Package Summary) and the Capital Vacations flow
+ * (tickets). The comps are set in Inter with a pink/coral pair; this page keeps
+ * the site's Roboto and its single pink accent so the flow reads as the same
+ * property as the landing page. Neutral greys are the comps' own.
+ */
+.flow,
+.ob,
+.md-backdrop {
+  --fl-accent: var(--accent-strong);
+  --fl-accent-dark: var(--accent-deep);
+  --fl-ink: #0d0d0d;
+  --fl-navy: #0b2a4a;
+  --fl-body: #1c2733;
+  --fl-muted: #4d4d4d;
+  --fl-faint: #6b6b6b;
+  --fl-line: #b2b2b2;
+  --fl-line-soft: #e5e5e5;
+  --fl-canvas: #eaf0f8;
+  --fl-surface: #ffffff;
+  /* Modern card/field system: soft elevation over hard borders, large radii. */
+  --fl-radius-card: 16px;
+  --fl-radius-field: 10px;
+  --fl-field-line: #d5dce7;
+  --fl-shadow-card: 0 1px 2px rgba(11, 42, 74, 0.05), 0 12px 32px rgba(11, 42, 74, 0.08);
+  --fl-tint: #e7effc;
+  --fl-danger: #c81e1e;
+  --fl-yellow: #fffb53;
+  --fl-yellow-soft: #fffec8;
+  --fl-sky: #e5f5ff;
+  --fl-sky-label: #6ce6e5;
+  --fl-sky-ink: #001b75;
+}
+
+.flow {
+  padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 40px) clamp(48px, 6vw, 72px);
+  background: var(--fl-canvas);
+  color: var(--fl-body);
+  font-family: var(--font, Roboto, Arial, sans-serif);
+}
+
+.flow-inner {
+  width: 100%;
+  max-width: 1090px;
+  margin-inline: auto;
+}
+
+.flow--summary .flow-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  align-items: start;
+  gap: 16px;
+  max-width: 1280px;
+}
+
+.flow-main {
+  min-width: 0;
+}
+
+/* --- Offer band (steps 1–2) ---------------------------------------------- */
+
+.ob {
+  position: relative;
+  overflow: hidden;
+  /* Same side gutter as .flow, so .ob-inner and .flow-inner share an edge. */
+  padding-inline: clamp(16px, 4vw, 40px);
+  /* Paints only the bullet icons and the strike line here (>= 3:1 non-text; holiday gold 3.28:1). */
+  --fl-accent: var(--band-accent);
+  background: var(--band-alt);
+  color: var(--band-ink);
+}
+
+.ob-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/*
+ * The reference banner reads as a near-black photo. A left-weighted scrim keeps
+ * the headline side darkest, where the longest lines sit, and holds white type
+ * far above 7:1 over every part of the image.
+ */
+.ob::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    90deg,
+    rgba(7, 12, 20, 0.92) 0%,
+    rgba(7, 12, 20, 0.78) 42%,
+    rgba(7, 12, 20, 0.88) 100%
+  );
+  pointer-events: none;
+}
+
+/*
+ * One row at desktop: copy left, resort credit and price bottom-right on a
+ * shared baseline. Under ~900px .ob-side wraps to a full-width row of its own
+ * and keeps the credit left / price right pairing the mobile reference shows.
+ */
+.ob-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(24px, 3vw, 48px);
+  width: 100%;
+  /* Matches .flow-inner so the band's copy aligns with the step cards below. */
+  max-width: 1090px;
+  margin-inline: auto;
+  padding-block: clamp(24px, 3.4vw, 48px);
+}
+
+.ob-copy {
+  flex: 1 1 400px;
+  min-width: 0;
+}
+
+.ob-title {
+  margin: 0 0 clamp(16px, 1.8vw, 24px);
+  font-size: clamp(26px, 3.1vw, 46px);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+}
+
+.ob-bullets {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(8px, 0.9vw, 16px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(15px, 1.3vw, 20px);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ob-bullets li {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.ob-bullets svg {
+  flex: 0 0 auto;
+  width: clamp(20px, 1.8vw, 28px);
+  height: clamp(20px, 1.8vw, 28px);
+  color: var(--fl-accent);
+}
+
+.ob-side {
+  display: flex;
+  flex: 1 1 320px;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: clamp(16px, 3vw, 48px);
+}
+
+/*
+ * Tripadvisor credit — Figma node 8450:4202. The comp stacks the owl + bubble
+ * row over the two-line address with a 10px gap; the row itself is a 16px gap
+ * between the owl and a 2px-gap bubble group.
+ */
+.ob-resort {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ob-ta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Dark-ground mark is 29 x 19 in the comp (node 89:10207); both axes are set. */
+.ob-ta-logo {
+  width: 29px;
+  height: 19px;
+  flex-shrink: 0;
+}
+
+.ob-ta-bubbles {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ob-ta-bubble {
+  width: 20px;
+  height: 20px;
+}
+
+/*
+ * The comp sets the address in neutral/500 (#808080), which is for a light
+ * ground; over this photo it measures about 3:1 at 14px and fails AA, so the
+ * dark-ground equivalent is used here.
+ */
+.ob-resort-addr {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.ob-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ob-amount {
+  font-size: clamp(48px, 5.6vw, 84px);
+  font-weight: 900;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+}
+
+.ob-per {
+  font-size: clamp(15px, 1.3vw, 21px);
+  font-weight: 700;
+}
+
+.ob-normal {
+  font-size: clamp(14px, 1.15vw, 19px);
+  font-weight: 500;
+}
+
+/* The reference strikes the retail rate through in the campaign accent. */
+.ob-normal s {
+  margin-left: 8px;
+  font-weight: 700;
+  text-decoration-line: line-through;
+  text-decoration-color: var(--fl-accent);
+  text-decoration-thickness: 2px;
+}
+
+@media screen and (max-width: 560px) {
+  .ob-resort {
+    max-width: 180px;
+  }
+}
+
+/* --- Cards and fields ---------------------------------------------------- */
+
+.fcard {
+  --fl-card-pad: clamp(24px, 3vw, 40px);
+  padding: var(--fl-card-pad);
+  background: var(--fl-surface);
+  border: 0;
+  border-radius: var(--fl-radius-card);
+  box-shadow: var(--fl-shadow-card);
+}
+
+.fcard-title {
+  margin: 0 0 24px;
+  font-size: clamp(22px, 2.2vw, 26px);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--fl-navy);
+}
+
+/*
+ * Stepper — Figma node 11:6766. Sits flush to the top of the left panel and
+ * spans it edge to edge, so it negates the card padding and carries the comp's
+ * own 24px padding and bottom hairline.
+ */
+.fsteps {
+  margin: calc(var(--fl-card-pad) * -1) calc(var(--fl-card-pad) * -1) var(--fl-card-pad);
+  padding: 24px;
+  border-bottom: 1px solid var(--fl-line-soft);
+  border-radius: var(--fl-radius-card) var(--fl-radius-card) 0 0;
+  background: var(--fl-surface);
+}
+
+.fsteps-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fsteps-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fsteps-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  /* 44px keeps the back-link target legal without changing the drawn height. */
+  min-height: 44px;
+  border-radius: 8px;
+  color: var(--fl-muted);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.2;
+  text-decoration: none;
+}
+
+/* Numeral: filled disc on the step you are on, outlined on every other. */
+.fsteps-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--fl-muted);
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.fsteps-step.is-active {
+  color: var(--fl-accent);
+  font-weight: 600;
+}
+
+.fsteps-step.is-active .fsteps-num {
+  border-color: var(--fl-accent);
+  background: var(--fl-accent);
+  color: #ffffff;
+}
+
+a.fsteps-step:hover {
+  color: var(--fl-accent);
+}
+
+a.fsteps-step:hover .fsteps-num {
+  border-color: var(--fl-accent);
+  color: var(--fl-accent);
+}
+
+a.fsteps-step:focus-visible {
+  outline: 3px solid var(--fl-accent);
+  outline-offset: 3px;
+}
+
+.fsteps-sep {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--fl-ink);
+}
+
+@media screen and (max-width: 767px) {
+  .fsteps {
+    padding: 16px;
+  }
+  .fsteps-list,
+  .fsteps-item {
+    gap: 8px;
+  }
+}
+
+/* Sub-heading inside a field stack ("Card details" in the reference). */
+.fld-group-title {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fl-navy);
+}
+
+.fcard-title + .fcard-title,
+.fld-hint + .fcard-title {
+  margin-top: 32px;
+}
+
+.rule {
+  border: 0;
+  border-top: 1px solid var(--fl-line-soft);
+  margin: 24px 0;
+}
+
+.fld-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fld-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.fld-row--three {
+  grid-template-columns: minmax(0, 2fr) minmax(0, 2fr) minmax(0, 1fr);
+}
+
+.fld {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+/* Labels stay visible — never a placeholder-only field. */
+.fld-label {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.3;
+  color: var(--fl-muted);
+}
+
+.fld-input {
+  width: 100%;
+  /* 48px keeps the tap target over the 44px minimum. */
+  min-height: 52px;
+  padding: 14px 16px;
+  border: 1px solid var(--fl-field-line);
+  border-radius: var(--fl-radius-field);
+  background: var(--fl-surface);
+  color: var(--fl-ink);
+  /* 16px so iOS Safari does not zoom on focus. */
+  font-size: 16px;
+  font-family: inherit;
+  line-height: 1.25;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.fld-input::placeholder {
+  color: #9aa3ae;
+}
+
+.fld-input:hover {
+  border-color: #9fb0c8;
+}
+
+.fld-input:focus-visible {
+  outline: none;
+  border-color: var(--fl-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent) 22%, transparent);
+}
+
+.fld-input.is-invalid {
+  border-color: var(--fl-danger);
+}
+
+/* Leading-glyph field (card number). The icon is decorative; the label names it. */
+.fld-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.fld-icon {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: var(--fl-faint);
+  pointer-events: none;
+}
+
+.fld-input--icon {
+  padding-left: 48px;
+}
+
+.fld-select {
+  appearance: none;
+  padding-right: 34px;
+  background-image: linear-gradient(45deg, transparent 50%, #4d4d4d 50%),
+    linear-gradient(135deg, #4d4d4d 50%, transparent 50%);
+  background-position: calc(100% - 20px) 55%, calc(100% - 15px) 55%;
+  background-size: 5px 5px, 5px 5px;
+  background-repeat: no-repeat;
+}
+
+.fld-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--fl-faint);
+}
+
+/* Errors carry an icon glyph as well as colour, never colour alone. */
+.fld-error {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fl-danger);
+}
+
+.form-error {
+  margin: 16px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fl-danger);
+}
+
+.form-error:not(.is-shown) {
+  display: none;
+}
+
+.form-error:focus-visible {
+  outline: 3px solid var(--fl-danger);
+  outline-offset: 3px;
+}
+
+/*
+ * Checkboxes and radios are drawn rather than left to the platform: the native
+ * control is a hard-edged OS square that reads nothing like the 10px-radius
+ * fields around it. Same 22px box, rounded, with the mark clipped out of a
+ * pseudo-element so it animates in instead of appearing.
+ */
+.fld-checkbox,
+.md-choice-row input[type="radio"] {
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 0 0 22px;
+  display: grid;
+  place-content: center;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  border: 2px solid #c3ccda;
+  background: var(--fl-surface);
+  cursor: pointer;
+  transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.fld-checkbox {
+  border-radius: 6px;
+}
+
+.md-choice-row input[type="radio"] {
+  border-radius: 50%;
+}
+
+.fld-checkbox::before,
+.md-choice-row input[type="radio"]::before {
+  content: "";
+  transform: scale(0);
+  transition: transform 160ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/* Tick, clipped from a solid block so it inherits the control's own colour. */
+.fld-checkbox::before {
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  clip-path: polygon(14% 47%, 0 62%, 40% 100%, 100% 22%, 84% 8%, 38% 70%);
+}
+
+.md-choice-row input[type="radio"]::before {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.fld-checkbox:hover,
+.md-choice-row input[type="radio"]:hover {
+  border-color: var(--fl-accent);
+}
+
+.fld-checkbox:checked,
+.md-choice-row input[type="radio"]:checked {
+  border-color: var(--fl-accent);
+  background: var(--fl-accent);
+}
+
+.fld-checkbox:checked::before,
+.md-choice-row input[type="radio"]:checked::before {
+  transform: scale(1);
+}
+
+.fld-checkbox:focus-visible,
+.md-choice-row input[type="radio"]:focus-visible {
+  outline: none;
+  border-color: var(--fl-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--fl-accent) 22%, transparent);
+}
+
+.fld-checkbox[aria-invalid="true"] {
+  border-color: var(--fl-danger);
+}
+
+.fld-checkbox:disabled,
+.md-choice-row input[type="radio"]:disabled {
+  border-color: var(--fl-line-soft);
+  background: var(--fl-canvas);
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fld-checkbox,
+  .md-choice-row input[type="radio"],
+  .fld-checkbox::before,
+  .md-choice-row input[type="radio"]::before {
+    transition: none;
+  }
+}
+
+.consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-top: 32px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fl-muted);
+}
+
+.consent a,
+.s2-legal a,
+.md-reason a {
+  color: #0037eb;
+  text-decoration: underline;
+}
+
+/* --- Buttons ------------------------------------------------------------- */
+
+.fbtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 14px 24px;
+  border: 0;
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 200ms ease, transform 200ms ease, box-shadow 200ms ease;
+}
+
+.fbtn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.fbtn--primary {
+  background: var(--cta-bg);
+  color: var(--cta-ink);
+  box-shadow: 0 8px 20px -12px color-mix(in srgb, var(--cta-bg) 70%, transparent);
+}
+
+.fbtn--primary:hover:not(:disabled) {
+  background: var(--cta-hover);
+  color: var(--cta-hover-ink);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px -14px color-mix(in srgb, var(--cta-bg) 85%, transparent);
+}
+
+.fbtn--primary:active:not(:disabled) {
+  transform: translateY(0) scale(0.99);
+}
+
+.fbtn--primary:disabled {
+  background: var(--fl-line);
+  color: #ffffff;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.fbtn--ghost {
+  background: var(--fl-canvas);
+  color: var(--fl-ink);
+}
+
+.fbtn--ghost:hover {
+  background: var(--fl-line-soft);
+}
+
+.fbtn--dark {
+  background: var(--fl-ink);
+  color: #ffffff;
+}
+
+.fbtn--dark:hover {
+  background: #333333;
+}
+
+.fbtn:focus-visible {
+  outline: 3px solid var(--fl-navy);
+  outline-offset: 3px;
+}
+
+.fbtn--wide {
+  width: 100%;
+  margin-top: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--cta-bg) 22%, transparent);
+}
+
+/* --- Step 1 -------------------------------------------------------------- */
+
+.s1,
+.s2 {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(320px, 1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+/*
+  The dates panel pins below the sticky header the same way the Package Summary
+  does on the later steps, so it stays in view while the guest works down the
+  long form on the left. Same offset token, so both columns pin to one line.
+
+  Collapsed only. Open, the panel is a two-month calendar that is taller than
+  the viewport on most laptops, and a sticky box can be no taller than the
+  space it pins into — so it capped at `max-height` and the second month went
+  behind an inner scrollbar, cropped. A guest picking dates is looking at this
+  panel, not the form beside it, so there is nothing for it to stay in view
+  *for*: it scrolls with the page and shows both months whole. Unpinned below
+  1024px too, where the columns stack.
+*/
+.s1-right:not(.is-open) {
+  position: sticky;
+  top: calc(var(--fl-header-h, 81px) + 24px);
+  max-height: calc(100vh - var(--fl-header-h, 81px) - 48px);
+  overflow: auto;
+}
+
+/*
+  Step 2's order summary pins the same way, off the same offset token, so the
+  right-hand column holds one line across steps 1, 2 and the Package Summary
+  steps. No height cap and no inner scroller: the panel is exactly as tall as
+  its content. If it ever outgrows the viewport it simply stops behaving as a
+  sticky element and scrolls with the page, which shows every row whole —
+  the same trade the open calendar makes on step 1.
+*/
+.s2-right {
+  position: sticky;
+  top: calc(var(--fl-header-h, 81px) + 24px);
+}
+
+.seals {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.seals img {
+  width: 80px;
+  height: 80px;
+}
+
+.urgency {
+  margin: 16px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--fl-ink);
+}
+
+.dates-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dates-head .fcard-title {
+  margin-bottom: 0;
+  font-size: 18px;
+}
+
+.toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 56px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: var(--fl-line);
+  cursor: pointer;
+  transition: background-color 200ms ease;
+}
+
+.toggle.is-on {
+  background: var(--fl-accent);
+}
+
+.toggle:focus-visible {
+  outline: 3px solid var(--fl-navy);
+  outline-offset: 2px;
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  transition: transform 200ms ease;
+}
+
+.toggle.is-on .toggle-knob {
+  transform: translateX(32px);
+}
+
+.toggle-text {
+  position: absolute;
+  right: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+
+.toggle.is-on .toggle-text {
+  right: auto;
+  left: 8px;
+}
+
+.dates-flex {
+  margin: 24px 0 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.dates-summary {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--fl-line-soft);
+  text-align: center;
+}
+
+.dates-summary div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dates-summary div + div {
+  border-left: 1px solid var(--fl-line-soft);
+}
+
+.dates-summary span {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fl-muted);
+}
+
+.dates-summary b {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--fl-navy);
+}
+
+/* --- Calendar ------------------------------------------------------------ */
+
+.cal {
+  margin-top: 24px;
+}
+
+.cal-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cal-nav-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fl-muted);
+}
+
+.cal-arrow {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--fl-ink);
+  cursor: pointer;
+}
+
+.cal-arrow:hover:not(:disabled) {
+  background: var(--fl-canvas);
+}
+
+.cal-arrow:disabled {
+  color: var(--fl-line);
+  cursor: not-allowed;
+}
+
+.cal-arrow:focus-visible {
+  outline: 3px solid var(--fl-navy);
+}
+
+.cal-arrow svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cal-month + .cal-month {
+  margin-top: 24px;
+}
+
+.cal-month-label {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  color: var(--fl-ink);
+}
+
+.cal-week,
+.cal-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 6px 0;
+}
+
+.cal-week {
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--fl-line-soft);
+  font-size: 12px;
+  font-weight: 600;
+  text-align: center;
+  color: var(--fl-muted);
+}
+
+.cal-days {
+  padding-top: 12px;
+}
+
+.cal-day {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  /* Full-width button keeps the tap target past the 44px minimum. */
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--fl-ink);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/*
+ * Every state — hover, in range, check-in, check-out — reads as a circle on
+ * this marker rather than a bar across the cell. It shrinks with the column so
+ * it stays round on a 375px phone instead of clipping.
+ */
+.cal-day-n {
+  display: grid;
+  place-items: center;
+  width: min(40px, 100%);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transition: background-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cal-day-n {
+    transition: none;
+  }
+}
+
+.cal-day:hover:not(:disabled):not(.is-in):not(.is-out) .cal-day-n {
+  background: var(--fl-canvas);
+}
+
+/* The ring follows the marker, so focus reads as a circle too. */
+.cal-day:focus-visible {
+  outline: none;
+}
+
+.cal-day:focus-visible .cal-day-n {
+  outline: 3px solid var(--fl-navy);
+  outline-offset: 2px;
+}
+
+.cal-day.is-past {
+  color: #c4c8ce;
+  cursor: not-allowed;
+}
+
+.cal-day.is-range .cal-day-n {
+  background: #ffe1ea;
+}
+
+/*
+ * accent-dark, not accent: the day number is 14px, so it needs 4.5:1. White on
+ * --fl-accent-dark is >= 5.9:1 in every palette (tt, the tightest --fl-accent,
+ * is 4.95:1). The ring below stays --fl-accent, which clears the 3:1 non-text
+ * floor.
+ */
+.cal-day.is-in .cal-day-n,
+.cal-day.is-out .cal-day-n {
+  background: var(--fl-accent-dark);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.cal-day.is-out .cal-day-n {
+  background: #ffffff;
+  color: var(--fl-accent-dark);
+  box-shadow: inset 0 0 0 2px var(--fl-accent);
+}
+
+/* --- Step 2 -------------------------------------------------------------- */
+
+.s2-head {
+  text-align: center;
+}
+
+.s2-head .fcard-title {
+  margin-bottom: 8px;
+}
+
+.s2-cards {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  /* Flex ignores the centred text alignment .s2-head sets on the heading. */
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--fl-muted);
+}
+
+/* Marks share a 39.67 x 28 card box, so height drives the row. */
+.s2-card {
+  display: block;
+  width: auto;
+  height: 28px;
+}
+
+/* Reassurance panel: tinted, not bordered, with the lock in its own disc. */
+.s2-secure {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 16px 20px;
+  border-radius: 12px;
+  background: var(--fl-tint);
+  color: var(--fl-navy);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.s2-secure-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--fl-surface);
+}
+
+.s2-secure-icon svg {
+  width: 20px;
+  height: 20px;
+  color: var(--fl-navy);
+}
+
+/* Consent gate. The whole row is the label, so the text is part of the target. */
+.s2-terms {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 24px;
+  padding: 10px 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fl-body);
+  cursor: pointer;
+}
+
+.s2-terms a {
+  color: var(--fl-accent);
+  font-weight: 600;
+}
+
+.s2-safe-note {
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+  text-align: center;
+  color: var(--fl-muted);
+}
+
+.s2-hold {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/*
+ * Urgency flame: two solid glyphs stacked — an amber body with a pink core
+ * sitting where a real flame's hottest part is. One glyph cannot carry two
+ * colours, and a gradient fill would need an inline <defs>, which the icon
+ * components do not expose.
+ */
+.s2-flame {
+  position: relative;
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.4em;
+  vertical-align: -0.22em;
+}
+
+.s2-flame-outer,
+.s2-flame-core {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+
+.s2-flame-outer {
+  width: 100%;
+  height: 100%;
+  color: #f5b300;
+}
+
+.s2-flame-core {
+  width: 58%;
+  height: 58%;
+  color: var(--fl-accent);
+}
+
+.s2-hold-clock {
+  color: #df0a0a;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Price Details — Figma node 139:8886. A tinted panel rather than loose rows
+ * on the card: 12px radius, 16px padding, hairline-ruled rows, and the total
+ * as a filled bar so the number people check first is the one that stands out.
+ */
+.pricebox {
+  padding: 16px;
+  border-radius: 12px;
+  background: #eff0f1;
+}
+
+.pricebox-title {
+  margin: 0 0 24px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fl-navy);
+}
+
+.price {
+  margin: 0;
+}
+
+.price > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 8px 6px;
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--fl-ink);
+}
+
+/* Rule between rows only — never under the last one or the total. */
+.price > div + div:not(.price-total) {
+  border-top: 1px solid #cccccc;
+}
+
+.price dt,
+.price dd {
+  margin: 0;
+}
+
+.price dd {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Selector matches `.price > div`'s specificity so the white text wins. */
+.price > div.price-total {
+  margin-top: 8px;
+  border-radius: 6px;
+  background: #494747;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.price-note {
+  margin: 24px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--fl-ink);
+}
+
+.bs-head {
+  /* The divider that used to sit here is gone; keep the gap it provided. */
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bs-head .fcard-title {
+  margin-bottom: 0;
+}
+
+.bs-edit {
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: transparent;
+  color: #7f8a99;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.bs-edit:hover {
+  color: #0037eb;
+}
+
+.bs-edit:focus-visible {
+  outline: 3px solid var(--fl-navy);
+  border-radius: 4px;
+}
+
+.bs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.bs li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.bs svg {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  color: var(--fl-accent);
+}
+
+/* --- Hold timer ---------------------------------------------------------- */
+
+.ht {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 16px 24px;
+  padding: 16px 24px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
+  background: var(--fl-yellow);
+  color: var(--fl-ink);
+}
+
+.ht-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.ht-bolt {
+  width: 20px;
+  height: 20px;
+  fill: #e03d24;
+}
+
+.ht-clock {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+.ht-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.ht-unit b {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: #e03d24;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.ht-unit small {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.ht-colon {
+  padding-top: 6px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* --- Package Summary ----------------------------------------------------- */
+
+.ps {
+  position: sticky;
+  /* Clears the sticky header with a 24px gap; the fallback matches the bar's
+     drawn height before the measurement lands. */
+  top: calc(var(--fl-header-h, 81px) + 24px);
+  /* Clips the section dividers and the "Purchased" ribbon to the radius. */
+  overflow: hidden;
+  background: var(--fl-surface);
+  /* Same surface treatment as the .fcard panels on the left. */
+  border: 0;
+  border-radius: var(--fl-radius-card);
+  box-shadow: var(--fl-shadow-card);
+}
+
+.ps-title {
+  margin: 0;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--fl-line-soft);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+.ps-timer {
+  padding: 16px;
+  border-bottom: 1px solid var(--fl-line-soft);
+  background: var(--fl-yellow-soft);
+}
+
+.ps-purchased {
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--fl-line-soft);
+}
+
+.ps-ribbon {
+  position: absolute;
+  top: 22px;
+  left: -34px;
+  z-index: 1;
+  padding: 6px 48px;
+  background: var(--fl-sky-label);
+  color: var(--fl-sky-ink);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  transform: rotate(-45deg);
+}
+
+.ps-hotel {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  padding: 24px;
+  border: 0;
+  background: transparent;
+  color: var(--fl-ink);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.ps-hotel:focus-visible {
+  outline: 3px solid var(--fl-navy);
+  outline-offset: -3px;
+}
+
+.ps-thumb {
+  flex: 0 0 auto;
+  width: 90px;
+  height: 90px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.ps-hotel-copy {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ps-hotel-name {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.ps-hotel-city {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ps-hotel-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.ps-hotel-line b {
+  font-weight: 600;
+}
+
+.ps-hotel-line svg {
+  width: 16px;
+  height: 16px;
+  color: var(--fl-accent);
+}
+
+.ps-chevron {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  transform: rotate(90deg);
+  transition: transform 200ms ease;
+}
+
+.ps-chevron.is-open {
+  transform: rotate(-90deg);
+}
+
+.ps-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0 24px 24px;
+  overflow: hidden;
+}
+
+/*
+ * Centre, not baseline: the <dt> is an inline-flex whose first child is the
+ * icon, so its baseline is the SVG's bottom edge rather than its text, which
+ * left every value sitting low against its label. Label and value share a
+ * size and line-height, so centring lines the text up exactly.
+ */
+.ps-details > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.ps-details dt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 600;
+}
+
+.ps-details dt svg {
+  flex: 0 0 18px;
+}
+
+.ps-details dt svg {
+  width: 18px;
+  height: 18px;
+  color: var(--fl-accent);
+}
+
+.ps-details dd {
+  margin: 0;
+  min-width: 0;
+  font-weight: 500;
+}
+
+.ps-extras {
+  padding: 24px 24px 16px;
+}
+
+.ps-extras-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+.ps-empty {
+  margin: 0;
+  font-size: 14px;
+  color: var(--fl-faint);
+}
+
+.ps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ps-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.ps-line svg {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  color: var(--fl-accent);
+}
+
+.ps-line-label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.ps-line-label small {
+  font-size: 12px;
+}
+
+.ps-line-amt {
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/*
+  The upgrade this page is offering, before it is taken.
+
+  Dashed rather than solid is the whole signal: every other row is something
+  the guest owns, and a dashed outline reads as an outline — a placeholder the
+  purchase would fill in. The tag under the label carries the same meaning in
+  words, since the border alone is not something a screen reader announces.
+*/
+.ps-line--preview {
+  align-items: flex-start;
+  /* Negative margin so the dashed box's padding does not indent the row
+     relative to the solid rows above it — the icons stay on one axis. */
+  margin: 0 -8px;
+  padding: 8px;
+  border: 1px dashed var(--fl-accent);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--fl-accent) 4%, transparent);
+}
+
+.ps-line--preview .ps-line-label {
+  color: var(--fl-muted);
+}
+
+/* The price is the thing they are weighing — it stays at full strength. */
+.ps-line--preview .ps-line-amt {
+  color: var(--fl-ink);
+}
+
+.ps-line-tag {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--fl-muted);
+}
+
+.ps-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0 24px;
+  padding: 24px 0 16px;
+  border-top: 1px solid var(--fl-line-soft);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+.ps-total-amt small {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--fl-muted);
+}
+
+/* --- Upsell steps -------------------------------------------------------- */
+
+.up {
+  padding: 0;
+}
+
+.up-body {
+  padding: 32px;
+}
+
+.up-title {
+  margin: 0 0 40px;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: var(--fl-ink);
+}
+
+.up-sub {
+  margin: 0 0 12px;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--fl-ink);
+}
+
+.up-text {
+  margin: 0;
+  max-width: 624px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.up-photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 800 / 440;
+  object-fit: cover;
+  margin-top: 40px;
+  border-radius: 12px;
+}
+
+.up-stepper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding: 32px;
+  border-top: 1px solid var(--fl-line);
+}
+
+/*
+  Skip is the way out, so it sits alone on the left, away from the two actions
+  that keep the guest moving. The auto margin does it without a second flex
+  container, so the single-button steppers are unaffected.
+*/
+.up-stepper-skip {
+  margin-right: auto;
+}
+
+/* Add/remove and Continue travel together on the right. */
+.up-stepper-end {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.up-gallery-title {
+  margin: 40px 0 24px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+/*
+  Mini hero for the tickets step: one full-width image under the title, with the
+  offer copy and CTA stacked beneath it. Wide crop so it sets the scene without
+  pushing the decision below the fold.
+*/
+.tk-hero {
+  display: block;
+  width: 100%;
+  /* Ratio still reserves the box against layout shift; the cap wins once the
+     column is wide enough for 16/7 to exceed 200px. */
+  aspect-ratio: 16 / 7;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin: 0 0 24px;
+}
+
+/* Now the closing sentence of the description, not its own line. */
+.tk-offer {
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+.tk-text {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/*
+  Cruise highlights: alternating image/text rows under the offer block. Same
+  two-column proportions and photo radius as the hero above them; the rows swap
+  sides to give the stack some rhythm.
+*/
+.tkf {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tkf-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 32px;
+}
+
+.tkf-row:nth-child(even) .tkf-photo {
+  order: 2;
+}
+
+.tkf-photo {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  /* Caps the row height on wide screens; `cover` crops rather than squashes. */
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.tkf-title {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fl-ink);
+}
+
+.tkf-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.tk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.tk-added {
+  font-weight: 700;
+  color: #0e7c86;
+}
+
+/* --- Modals -------------------------------------------------------------- */
+
+.md-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+}
+
+.md {
+  position: relative;
+  width: 100%;
+  max-height: calc(100vh - 32px);
+  /* Vertical scrolling only: the corner ribbon overhangs the card on purpose
+     and must be clipped, never turned into a horizontal scrollbar. */
+  overflow: hidden auto;
+  padding: 40px 48px;
+  background: #ffffff;
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.36);
+  color: var(--fl-ink);
+  font-family: var(--font, Roboto, Arial, sans-serif);
+}
+
+.md--sure {
+  max-width: 632px;
+}
+
+.md--protect {
+  max-width: 900px;
+  padding: 48px;
+}
+
+.md-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.md-close svg {
+  width: 20px;
+  height: 20px;
+  fill: currentColor;
+}
+
+.md-close:hover {
+  background: var(--fl-canvas);
+}
+
+.md-close:focus-visible {
+  outline: 3px solid var(--fl-navy);
+}
+
+.md-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 32px;
+  font-size: 28px;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.md-title--lg {
+  margin-bottom: 0;
+}
+
+.md-star {
+  width: 24px;
+  height: 24px;
+  fill: var(--fl-accent);
+}
+
+.md-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-right: 24px;
+}
+
+.md-shield {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  fill: var(--fl-accent);
+}
+
+.md-body {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.md-question {
+  margin: 0 0 40px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.md-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/*
+  "Highly recommended" tag — hangs from the card's top edge, top-right.
+  Square top corners so it reads as continuous with the edge it sits on, rounded
+  below. The 24px inset matches the card's own corner radius, so the tag never
+  rides over the curve. It clears the heading vertically (the card's top padding
+  is deeper than the tag), so no horizontal clearance is needed at any width.
+*/
+.md-label {
+  position: absolute;
+  top: 0;
+  right: 24px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: 0 0 12px 12px;
+  background: var(--fl-accent-dark);
+  box-shadow: 0 8px 16px rgb(224 26 83 / 0.32);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.md-label-star {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  fill: currentColor;
+}
+
+@media screen and (max-width: 767px) {
+  .md-label {
+    right: 16px;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .md-label-star {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+.md-choices {
+  margin: 0 0 32px;
+  padding: 0;
+  border: 0;
+}
+
+.md-legend {
+  margin-bottom: 16px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.md-choice {
+  display: block;
+  padding: 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: box-shadow 160ms ease;
+}
+
+.md-choice--yes {
+  background: var(--fl-sky);
+}
+
+.md-choice--no {
+  margin-top: 16px;
+  background: var(--fl-canvas);
+}
+
+.md-choice.is-selected {
+  box-shadow: 0 0 0 2px var(--fl-accent);
+}
+
+.md-choice:has(input:focus-visible) {
+  box-shadow: 0 0 0 3px var(--fl-navy);
+}
+
+.md-choice-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.md-choice-row input {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  accent-color: var(--fl-accent);
+}
+
+.md-choice-text {
+  flex: 1 1 auto;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.md-chip {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.md-chip b {
+  font-size: 16px;
+}
+
+.md-chip small {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.md-reasons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  padding-left: 32px;
+  font-size: 14px;
+  line-height: 1.3;
+  color: #333333;
+}
+
+.md-reasons-title {
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #205272;
+}
+
+/* Each reason leads with its own glyph, aligned to the first line of the text. */
+.md-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.md-reason-icon {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  color: #205272;
+}
+
+/* --- Narrow viewports ---------------------------------------------------- */
+
+@media screen and (max-width: 1024px) {
+  .s1,
+  .s2,
+  .flow--summary .flow-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Selector matches the pinning rule's specificity — a bare `.s1-right`
+     would lose to `.s1-right:not(.is-open)` and stay pinned here. */
+  .s1-right:not(.is-open),
+  .s2-right {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  /* Comps put the summary first on tablet and phone. */
+  .flow--summary .ps {
+    position: static;
+    order: -1;
+  }
+
+  .ob-side {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .fcard,
+  .up-body,
+  .up-stepper {
+    padding: 24px 16px;
+  }
+
+  .tk-hero {
+    aspect-ratio: 3 / 2;
+    /* Narrow column: 3/2 is already under the cap, so it stays off. */
+    max-height: 200px;
+  }
+
+  .tk-actions .fbtn {
+    width: 100%;
+  }
+
+  .fld-row,
+  .fld-row--three,
+  .tkf-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Stacked, the alternating order would put copy above its own photo. */
+  .tkf-row:nth-child(even) .tkf-photo {
+    order: 0;
+  }
+
+  .up-stepper,
+  .up-stepper-end,
+  .md-actions {
+    flex-direction: column-reverse;
+  }
+
+  .up-stepper .fbtn,
+  .md-actions .fbtn {
+    width: 100%;
+  }
+
+  /* Stacked: the auto margin would push a full-width Skip off its row. */
+  .up-stepper-skip {
+    margin-right: 0;
+  }
+
+  .up-stepper-end {
+    width: 100%;
+    gap: 8px;
+  }
+
+  .md {
+    padding: 32px 24px;
+  }
+
+  .md--protect {
+    padding: 40px 24px 24px;
+  }
+
+  .md-title {
+    font-size: 22px;
+  }
+
+  .ht {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+/* --- Inline icons --------------------------------------------------------- */
+
+/*
+  Phosphor glyphs sitting inside a run of text (form errors, urgency lines,
+  button labels). Sized in `em` so they track the type scale, and nudged off the
+  baseline so the optical centre lines up with the x-height. In a flex parent
+  with its own `gap` (`.md-title`, `.ht-label`), the glyph carries its own sized
+  class instead.
+*/
+.ic-inline {
+  width: 1.1em;
+  height: 1.1em;
+  margin-right: 0.4em;
+  vertical-align: -0.2em;
+  flex: 0 0 auto;
+  fill: currentColor;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Toaster — Payment-Flow-Mockup 1:2928                                       */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * Add-on confirmations. The comp is a translucent green pill with a 2px mint
+ * hairline and a blurred backdrop; the green pair below is the comp's own
+ * (#077648 on the blend clears 4.5:1 against both the flow canvas and white).
+ *
+ * Fixed to the bottom of the viewport and centred, above the modals (z 1000)
+ * because taking Booking Protection closes its modal and toasts in one motion.
+ */
+.toaster {
+  position: fixed;
+  z-index: 1100;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  /* 24px frame padding from the comp, plus the safe area on notched phones. */
+  padding: 24px;
+  padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+  /* The stack must never eat clicks on the page behind it. */
+  pointer-events: none;
+}
+
+/* Nothing queued — take the padding out of the viewport entirely. */
+.toaster:empty {
+  display: none;
+}
+
+.toast {
+  --toast-green: #077648;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: min(100%, 560px);
+  padding: 16px 16px 16px 24px;
+  /* The comp's 20% green, but over an opaque light backing rather than the
+     bare page: the toast is pinned to the viewport and can land on the navy
+     footer, where #077648 on a transparent tint drops under 4.5:1. The tint is
+     unchanged — only what sits behind it. */
+  background:
+    linear-gradient(rgba(42, 153, 107, 0.2), rgba(42, 153, 107, 0.2)),
+    rgba(255, 255, 255, 0.94);
+  -webkit-backdrop-filter: blur(15px);
+  backdrop-filter: blur(15px);
+  border: 2px solid #dcfaed;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(11, 42, 74, 0.18);
+  color: var(--toast-green);
+  font-family: var(--font, Roboto, Arial, sans-serif);
+  pointer-events: auto;
+}
+
+/* No blur support (older Safari): the flat equivalent of the blend above. */
+@supports not ((backdrop-filter: blur(15px)) or (-webkit-backdrop-filter: blur(15px))) {
+  .toast {
+    background: #dcefe6;
+  }
+}
+
+.toast-msg {
+  margin: 0;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.25;
+  letter-spacing: 0.32px;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.toast-close {
+  flex: none;
+  /* 44×44 target; the glyph stays the comp's 24px. */
+  width: 44px;
+  height: 44px;
+  margin: -10px -10px -10px 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 150ms ease;
+}
+
+.toast-close svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.toast-close:hover {
+  background: rgba(7, 118, 72, 0.14);
+}
+
+.toast-close:active {
+  background: rgba(7, 118, 72, 0.22);
+}
+
+.toast-close:focus-visible {
+  outline: 3px solid var(--toast-green);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .toaster {
+    padding: 16px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  }
+
+  .toast {
+    gap: 8px;
+    padding: 12px 12px 12px 16px;
+  }
+
+  .toast-msg {
+    font-size: 15px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast-close {
+    transition: none;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/* Extra Vacation step (Figma 137:4009)                                       */
+/* -------------------------------------------------------------------------- */
+
+.xv-lede {
+  margin: 0 0 12px;
+  max-width: 624px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #205272;
+}
+
+.xv-offer {
+  margin: 16px 0 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--fl-accent);
+}
+
+/* Benefit rows: the comp's tick list, set as icon rows to match the flow. */
+.xv-benefits {
+  display: grid;
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.xv-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #eff5fb;
+}
+
+.xv-benefit-chip {
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--fl-surface);
+  color: var(--fl-accent);
+}
+
+.xv-benefit-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.xv-benefit-title {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--fl-ink);
+}
+
+.xv-benefit-text {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--fl-muted);
+}
+
+/* Photo strip arrows are <button>s; reset UA chrome, keep the Webflow look. */
+button.arrow-right,
+button.arrow-left {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.arrow-right:focus-visible,
+button.arrow-left:focus-visible {
+  outline: 3px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+ul.includingslist {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.offer-urgency {
+  font-weight: 700;
+  color: #0b2a4a;
+}
+
+/* Banner hover / press feedback (transform only). */
+.ssb {
+  transition: transform 180ms ease;
+}
+
+.ssb:hover {
+  transform: translateY(-2px);
+}
+
+.ssb:active {
+  transform: translateY(0) scale(0.995);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ssb,
+  .ssb:hover,
+  .ssb:active {
+    transition: none;
+    transform: none;
+  }
+}
+
+ul.hs-includes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Guest Reviews band: V2 review count and purchase line. */
+h3.ta-band-headline {
+  margin: 0;
+}
+
+.ta-summary-reviews,
+.ta-summary-purchased {
+  margin: 0;
+  color: #4a5568;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.ta-summary-reviews {
+  font-weight: 700;
+  color: #071330;
+}
+
+/* On the white band the white pill needs an edge to read as part of the banner. */
+
+/* -------------------------------------------------------------------------- */
+/* Hero price drop (PriceDrop): the hidden "99" holds the final width while    */
+/* the live digits roll, so the circle never reflows.                          */
+/* -------------------------------------------------------------------------- */
+
+.pb-digits {
+  position: relative;
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+.pb-digits-hold {
+  visibility: hidden;
+}
+
+.pb-digits-live {
+  position: absolute;
+  inset: 0;
+  text-align: center;
+}
+
+/* Things To Do — "This Winter" heading follows the attractions list. */
+.rd-panel-subtitle--spaced {
+  margin-top: 16px;
+  text-transform: uppercase;
+}
+
+/* Bonus tab — long lines read top to bottom in one column. */
+.rd-feature-list.rd-feature-list--stack {
+  grid-template-columns: 1fr;
+}
+
+/* --- Extra Vacation step ------------------------------------------------- */
+
+.ev-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+}
+
+.ev-hero {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+.ev-hero img,
+.ev-side {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ev-hero img {
+  aspect-ratio: 16 / 10;
+}
+
+.ev-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 42, 74, 0) 40%, rgba(11, 42, 74, 0.72) 100%);
+  pointer-events: none;
+}
+
+.ev-eyebrow {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--band);
+  color: var(--band-ink);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+/* Solid navy pill, so the white price holds >= 4.5:1 (14.3:1) over any photo. */
+.ev-price {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding: 8px 16px;
+  border-radius: 12px;
+  background: rgba(11, 42, 74, 0.92);
+  color: #ffffff;
+  line-height: 1;
+}
+
+.ev-price strong {
+  font-size: clamp(40px, 6vw, 56px);
+  font-weight: 800;
+}
+
+.ev-price span {
+  margin-top: 4px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.ev-side {
+  display: none;
+  border-radius: 16px;
+}
+
+.ev-lead {
+  margin: 24px 0 0;
+  max-width: 624px;
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--fl-ink);
+}
+
+.ev-perks {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ev-perk {
+  padding: 24px;
+  border-radius: 16px;
+  background: var(--accent-soft);
+}
+
+.ev-perk-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #ffffff;
+  color: var(--accent-strong);
+}
+
+.ev-perk-title {
+  margin: 16px 0 8px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--fl-ink);
+}
+
+.ev-perk-text {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ev-included {
+  margin: 24px 0 0;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.ev-status {
+  min-height: 24px;
+  margin: 16px 0 0;
+  font-weight: 700;
+  color: #0e7c86;
+}
+
+.ev-urgency {
+  margin: 8px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent-strong);
+}
+
+@media (min-width: 768px) {
+  .ev-stage {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .ev-hero {
+    grid-row: 1 / span 2;
+  }
+
+  .ev-side {
+    display: block;
+  }
+
+  .ev-perks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Top bar message separators pick up the season accent. */
+.stb-dot {
+  color: var(--s-accent);
+}
