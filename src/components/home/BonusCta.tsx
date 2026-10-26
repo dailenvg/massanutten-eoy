@@ -33,7 +33,7 @@ type PanelProps = {
   side: "left" | "right";
   photo: string;
   y: MotionValue<string> | undefined;
-  heading: string;
+  card: PassCard;
   art: ReactNode;
   reduced: boolean;
 };
@@ -54,11 +54,11 @@ function CardShine({ reduced }: { reduced: boolean }) {
 
 type PassCard = (typeof BONUS_CARDS)[number];
 
-/** Code-built ski pass: ribbon, snowflake chip, "+1 Pass" and its key line, slow shine. */
+/** Code-built ski pass: ribbon, snowflake chip, "Day 1"/"Day 2" and its key line, slow shine. */
 function PassArt({ card, twin, reduced }: { card: PassCard; twin: boolean; reduced: boolean }) {
   const NoteIcon = twin ? Mountains : Ticket;
   return (
-    <div className={`bch-card-img bch-gift-card${twin ? " bch-night-card" : ""}`} role="img" aria-label={`${card.label} ${card.unit}, included with your stay`}>
+    <div className={`bch-card-img bch-gift-card${twin ? " bch-night-card" : ""}`} role="img" aria-label={`${card.label} for day ${card.day} of ${BONUS_CARDS.length}, included with your stay`}>
       <span className="gc-ribbon gc-ribbon--v" aria-hidden="true"></span>
       <span className="gc-ribbon gc-ribbon--h" aria-hidden="true"></span>
       <span className="gc-bow" aria-hidden="true"><Snowflake /></span>
@@ -66,7 +66,7 @@ function PassArt({ card, twin, reduced }: { card: PassCard; twin: boolean; reduc
         <span className="gc-label">{card.label}</span>
         <span className="gc-chip"></span>
       </span>
-      <span className="gc-amount" aria-hidden="true"><span className="gc-cur">+</span>1<span className="gc-unit">{card.unit}</span></span>
+      <span className="gc-amount" aria-hidden="true"><span className="gc-unit gc-unit--lead">{card.unit}</span>{card.day}</span>
       <span className="gc-or" aria-hidden="true"><NoteIcon />{card.note}</span>
       <CardShine reduced={reduced} />
     </div>
@@ -74,12 +74,15 @@ function PassArt({ card, twin, reduced }: { card: PassCard; twin: boolean; reduc
 }
 
 /** One half of the split: parallax photo, glass card, headline, offer art. */
-function BonusPanel({ side, photo, y, heading, art, reduced }: PanelProps) {
+function BonusPanel({ side, photo, y, card, art, reduced }: PanelProps) {
   return (
     <div className={`bch-panel bch-${side}`}>
       <motion.img className="bch-bg" src={photo} alt="" width="1024" height="768" loading="lazy" decoding="async" style={{ y }} />
       <motion.div className="bch-glass" variants={reduced ? FADE : GLASS}>
-        <motion.h4 className="bch-headline" variants={reduced ? FADE : RISE}>{heading}</motion.h4>
+        <motion.h4 className="bch-headline" variants={reduced ? FADE : RISE}>
+          <span className="bch-headline-line">{card.headingLead}</span>{" "}
+          <span className="bch-headline-line">{card.headingRest}</span>
+        </motion.h4>
         <motion.div className="bch-art" variants={reduced ? FADE : ART}>{art}</motion.div>
       </motion.div>
     </div>
@@ -123,7 +126,7 @@ export default function BonusCta() {
         side="left"
         photo={LEFT_PHOTO}
         y={y}
-        heading={cardOne.heading}
+        card={cardOne}
         reduced={reduced}
         art={<PassArt card={cardOne} twin={false} reduced={reduced} />}
       />
@@ -138,7 +141,7 @@ export default function BonusCta() {
         side="right"
         photo={RIGHT_PHOTO}
         y={y}
-        heading={cardTwo.heading}
+        card={cardTwo}
         reduced={reduced}
         art={<PassArt card={cardTwo} twin reduced={reduced} />}
       />

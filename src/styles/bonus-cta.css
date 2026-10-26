@@ -123,6 +123,9 @@
   hyphens: manual;
 }
 
+/* Two deliberate lines ("DAY 1" / "SKI PASS"); the space between spans keeps the screen-reader text spaced. */
+.bch-headline-line { display: block; }
+
 /* Offer art ----------------------------------------------------------------- */
 
 .bch-art {
@@ -142,7 +145,7 @@
   filter: drop-shadow(0 16px 24px rgba(7, 19, 48, 0.35));
 }
 
-/* Pass art: a ribboned ski pass with a big "+1 Pass", a key line and a slow
+/* Pass art: a ribboned ski pass with a big "Day 1" / "Day 2", a key line and a slow
    shine (motion, skipped for reduced motion). */
 .bch-gift-card {
   position: relative;
@@ -214,7 +217,6 @@
   letter-spacing: -0.02em;
   text-shadow: 0 4px 16px rgba(7, 19, 48, 0.45);
 }
-.gc-cur { margin-right: 0.04em; font-size: 0.42em; margin-top: 0.14em; color: var(--gc-accent, #ffc72c); }
 
 .gc-unit {
   align-self: flex-end;
@@ -224,6 +226,8 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+/* "Day" leads the numeral ("DAY 1"), in the accent color the old "+" had. */
+.gc-unit--lead { margin-left: 0; margin-right: 0.12em; color: var(--gc-accent, #ffc72c); }
 
 /* Second pass: the first pass's seasonal twin. Deep accent field with soft,
    accent and band-accent ribbons, so the pair match in shape but not in color.

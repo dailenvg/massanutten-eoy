@@ -319,10 +319,10 @@ export const BONUS_SUBHEADING = "2 Ski Day Passes";
 /** Mark on the seam between the two passes. */
 export const BONUS_CONNECTOR = "+";
 
-/** One card per pass: panel headline, then the pass art's label, amount unit and key line. */
+/** One card per pass: panel headline (two fixed lines: lead, rest), then the pass art's label, day numeral, "Day" unit and key line. */
 export const BONUS_CARDS = [
-  { heading: "SKI DAY PASS", label: "Ski Day", unit: "Pass", note: "Slope access" },
-  { heading: "SKI DAY PASS", label: "Ski Day", unit: "Pass", note: "One day each" },
+  { day: 1, headingLead: "DAY 1", headingRest: "SKI PASS", label: "Ski Pass", unit: "Day", note: "Slope access" },
+  { day: 2, headingLead: "DAY 2", headingRest: "SKI PASS", label: "Ski Pass", unit: "Day", note: "One day each" },
 ] as const;
 
 /* -------------------------------------------------------------------------- */
